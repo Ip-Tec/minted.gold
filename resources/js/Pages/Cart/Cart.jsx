@@ -5,7 +5,7 @@ import Footer from "@/Components/Footer/Footer";
 import { CartContext } from "@/Store/CartContext";
 import Table from "@/Components/Cart/Method/Table";
 import Input from "@/Components/Cart/Method/Input";
-import Header from "@/Components/Cart/Method/Header";
+// import Header from "@/Components/Cart/Method/Header";
 import Button from "@/Components/Cart/Method/Button";
 import { useContext, useEffect, useState } from "react";
 
@@ -156,7 +156,7 @@ export default function CartPage() {
     if (isSuccess) {
         return (
             <>
-                <Header />
+                {/* <Header /> */}
                 <ColumnsWrapper>
                     <Box>
                         <h1>Thanks for your order!</h1>
@@ -171,7 +171,7 @@ export default function CartPage() {
     // console.log("products", products);
     return (
         <>
-            <Header />
+            {/* <Header /> */}
             <ColumnsWrapper>
                 <Box>
                     <h2>Cart</h2>

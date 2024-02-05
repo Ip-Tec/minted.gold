@@ -7,22 +7,20 @@ use App\Models\Product;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use App\Models\WebSetting\Featured;
+use App\Models\WebSetting\ComponentAds;
 use App\Models\WebSetting\ProductDisplay;
-// use App\Models\WebSetting\ComponentAdsTwo;
-use App\Models\WebSetting\ComponentAdsOne;
-
 class WebsiteSetting extends Controller
 {
     public function index()
     {
         $product = Product::paginate(28);
         $featured = Featured::all();
-        $ProductDisplay = ProductDisplay::all();
-        $ComponentAdsOne = ComponentAdsOne::all();
+        // $ProductDisplay = ProductDisplay::all();
+        $ComponentAdsOne = ComponentAds::all();
         return Inertia::render("Admin/WebsiteSetting", [
             'product' => $product,
             'featured' => $featured,
-            'productDisplay' => $ProductDisplay,
+            'productDisplay' => '$ProductDisplay',
             'ComponentAdsOne' => $ComponentAdsOne,
         ]);
     }
@@ -98,10 +96,10 @@ class WebsiteSetting extends Controller
 
         return redirect()->route("Admin/WebsiteSetting")->with('success', 'Category deleted successfully');
     }
-    public function destroyComponentAdsOne(ComponentAdsOne $componentAdsOne)
+    public function destroyComponentAdsOne(ComponentAds $componentAds)
     {
         // dd($category);
-        $componentAdsOne->delete();
+        $componentAds->delete();
 
         return redirect()->route("Admin/WebsiteSetting")->with('success', 'Category deleted successfully');
     }

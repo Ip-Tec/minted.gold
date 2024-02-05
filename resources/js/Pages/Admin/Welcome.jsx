@@ -1,5 +1,4 @@
 import { Link, Head, usePage, router } from "@inertiajs/react";
-import { Inertia} from "inertia";
 import AdminAuthenticated from "@/Admin/Layout/AdminAuthenticated";
 
 export default function Welcome({
@@ -14,7 +13,7 @@ export default function Welcome({
     //     router.visit('/admin/auth/login');
     //     return null;
     // }
-    Inertia.get('Admin/AdminDashboard')
+    router.get('Admin/AdminDashboard')
     return (
         <>
             <AdminAuthenticated user={auth.user}>

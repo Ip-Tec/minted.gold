@@ -54,7 +54,7 @@ class ProductController extends Controller
 
         return Inertia::render('Product/Index', [
             'products' => $products,
-            'productsDisplay' => $productsDisplay,
+            'productsDisplay' => '$productsDisplay',
             'productsFeatured' => $productsFeatured,
             'auth' => $user,
         ]);

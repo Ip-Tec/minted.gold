@@ -1,10 +1,12 @@
 <?php
 
-use App\Http\Controllers\ProfileController;
-use Illuminate\Foundation\Application;
-use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
-
+use Illuminate\Support\Facades\Route;
+use Illuminate\Foundation\Application;
+use App\Http\Controllers\CartController;
+use App\Http\Controllers\ProductController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\AdminProfileController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -16,14 +18,40 @@ use Inertia\Inertia;
 |
 */
 
+// Admin Route
+require __DIR__ . '/adminWeb.php';
+
 Route::get('/', function () {
+    // Call the index method of ProductController to get data
+    $productController = app(ProductController::class);
+    $newProductsData = $productController->index();
+
     return Inertia::render('Welcome', [
         'canLogin' => Route::has('login'),
         'canRegister' => Route::has('register'),
         'laravelVersion' => Application::VERSION,
         'phpVersion' => PHP_VERSION,
+        'Featureds' => [ProductController::class, 'index'],
+        'newProducts' => Route::get('', [ProductController::class, 'index']),
     ]);
+})->name("welcome");
+
+Route::get('/', [ProductController::class, 'index'])->name('products.index');
+
+Route::get('/products', [ProductController::class, 'index'])->name('products.index');
+
+Route::get('product/{show}', [ProductController::class, 'show'])->name('product.show');
+
+Route::get('/product/search', [ProductController::class, 'search'])->name('products.search');
+
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
+    Route::post('/cart', [CartController::class, 'store'])->name('cart.store');
+    Route::put('/cart/{cart}', [CartController::class, 'update'])->name('cart.update');
+    Route::delete('/cart/{cart}', [CartController::class, 'destroy'])->name('cart.destroy');
 });
+
 
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
@@ -35,4 +63,11 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-require __DIR__.'/auth.php';
+
+
+
+// Auth Route
+require __DIR__ . '/auth.php';
+
+
+// require __DIR__ . '/admin.php';

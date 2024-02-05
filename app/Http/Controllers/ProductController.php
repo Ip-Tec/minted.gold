@@ -47,7 +47,7 @@ class ProductController extends Controller
     {
         $products = Product::paginate(10);
         $productsFeatured = Featured::paginate(10);
-        $productsDisplay = ProductDisplay::paginate(10);
+        // $productsDisplay = ProductDisplay::paginate(10);
 
         // Include authenticated user data
         $user = auth()->user();

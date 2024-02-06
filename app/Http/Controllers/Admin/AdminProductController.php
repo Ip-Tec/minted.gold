@@ -8,6 +8,7 @@ use App\Models\Product;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
 
 class AdminProductController extends Controller
 {
@@ -32,39 +33,41 @@ class AdminProductController extends Controller
     }
 
     // Store a newly created product in the database.
-    public function store(Request $request)
-    {
-        $request->validate([
-            'title' => 'required|string',
-            'stock' => 'required|integer',
-            'price' => 'required|numeric',
-            'category' => 'required|string',
-            'description' => 'required|string',
-            'images' => 'array',  // assuming 'images' is the field name in your form
-        ]);
+public function store(Request $request)
+{
+    $request->validate([
+        'title' => 'required|string',
+        'stock' => 'required|integer',
+        'price' => 'required|numeric',
+        'category' => 'required|string',
+        'description' => 'required|string',
+        'images.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048', // Validate each image file
+    ]);
 
-        $images = [];
+    $images = [];
 
-        if ($request->hasFile('images')) {
-            foreach ($request->file('images') as $image) {
-                // Store the image in the 'public' disk under the 'images' directory
-                $path = $image->store('images');
-                $images[] = $path;
-            }
+    if ($request->hasFile('images')) {
+        foreach ($request->file('images') as $image) {
+            // Store the image in the 'public' disk under the 'images' directory
+            $path = $image->store('public/images');
+            // Get the public URL of the stored image
+            $url = Storage::url($path);
+            // Add the public URL to the array of images
+            $images[] = $url;
         }
-
-        $productData = $request->all();
-        $productData['slug'] = Str::slug($request['title'] . '-' . $request['price']);
-
-        // Assign the array of images to the 'image' field in your data
-        $productData['image'] = $images;
-
-        // Create the product with images
-        Product::create($productData);
-
-        return redirect()->route('admin.product')->with('success', 'Product created successfully');
     }
 
+    $productData = $request->all();
+    $productData['slug'] = Str::slug($request['title'] . '-' . $request['price']);
+
+    // Assign the array of image URLs to the 'image' field in your data
+    $productData['image'] = $images;
+
+    // Create the product with images
+    Product::create($productData);
+
+    return redirect()->route('admin.product')->with('success', 'Product created successfully');
+}
 
     // Display the specified product.
     public function show($id)

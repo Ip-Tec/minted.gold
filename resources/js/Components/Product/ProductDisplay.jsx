@@ -22,8 +22,39 @@ export default function ProductDisplay({ products, HeadingName }) {
     // Preload all images
     const imagePromises = products.map((product, index) => {
       return new Promise((resolve, reject) => {
+        if (typeof product.image === 'string') {
+          // Convert the image to an array
+          product.image = JSON.parse(product.image);
+        }
+          product.image = useEffect(() => {
+            // Preload all images
+            const imagePromises = products.map((product, index) => {
+              return new Promise((resolve, reject) => {
+                if (typeof product.image === 'string') {
+                  // Convert the image to an array
+                  product.image = [product.image];
+                }
+                const img = new window.Image();
+                img.src = product.image[0]; // Assuming the first item in the array is the image URL
+                img.onload = () => {
+                  setImageLoaded((prev) => {
+                    const newLoaded = [...prev];
+                    newLoaded[index] = true;
+                    return newLoaded;
+                  });
+                  resolve();
+                };
+                img.onerror = reject;
+              });
+            });
+          
+            // Wait for all images to be loaded
+            Promise.all(imagePromises);
+          }, [products]);
+          
+    
         const img = new window.Image();
-        img.src = product?.image;
+        img.src = product.image[0]; // Assuming the first item in the array is the image URL
         img.onload = () => {
           setImageLoaded((prev) => {
             const newLoaded = [...prev];
@@ -35,10 +66,11 @@ export default function ProductDisplay({ products, HeadingName }) {
         img.onerror = reject;
       });
     });
-
+  
     // Wait for all images to be loaded
     Promise.all(imagePromises);
   }, [products]);
+  
 
   const product = products[currentIndex];
   const slideStyle = {

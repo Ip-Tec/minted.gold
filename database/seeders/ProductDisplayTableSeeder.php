@@ -34,7 +34,7 @@ class ProductDisplayTableSeeder extends Seeder
 
             $product_display['slug'] = Str::slug($product_display['title']); // Generate slug from title
 
-            DB::table('product_display')->insert($product_display);
+            DB::table('products_display')->insert($product_display);
         }
     }
 }

@@ -60,7 +60,7 @@ const ProductBox = ({ slug, title, description, price, image }) => {
                 >
                     <span className="text-base">₦{price}</span>
                     <del className="opacity-90 text-gray-400">
-                        ₦{(price + 20).toFixed(2)}
+                        ₦{(price || (0 + 20)).toFixed(2)}
                     </del>
                 </Link>
                 <div className="sm:block flex justify-center mb-1 flex-col items-center w-[98%] text-xs mx-1 my-1">

@@ -52,7 +52,7 @@ const ProductBox = ({ slug, title, description, price, image }) => {
                     <ReviewStar
                         product={{ slug, title, description, price, image }}
                     />{" "}
-                    ({((price / 8) * 2 + 1).toFixed(2)})
+                    ({(((!isNaN(price) ? price : 20) / 8) * 2 + 1).toFixed(2)})
                 </Link>
                 <Link
                     href={route("product.show", `${slug}`)}
@@ -60,9 +60,10 @@ const ProductBox = ({ slug, title, description, price, image }) => {
                 >
                     <span className="text-base">₦{price}</span>
                     <del className="opacity-90 text-gray-400">
-                        ₦{(price || (0 + 20)).toFixed(2)}
+                        ₦{(!isNaN(price) ? price : 0 + 20).toFixed(2)}
                     </del>
                 </Link>
+
                 <div className="sm:block flex justify-center mb-1 flex-col items-center w-[98%] text-xs mx-1 my-1">
                     <Link
                         href={route("product.show", `${slug}`)}
@@ -73,7 +74,9 @@ const ProductBox = ({ slug, title, description, price, image }) => {
                         Learn More
                     </Link>
 
-                    <AddToCart product={{ slug, title, description, price, image }} />
+                    <AddToCart
+                        product={{ slug, title, description, price, image }}
+                    />
                 </div>
             </div>
         </div>

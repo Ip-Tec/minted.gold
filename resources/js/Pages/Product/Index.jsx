@@ -1,4 +1,4 @@
-// Product/Index.jsx
+// Pages/Product/Index.jsx
 
 import React from "react";
 import { Head } from "@inertiajs/react";

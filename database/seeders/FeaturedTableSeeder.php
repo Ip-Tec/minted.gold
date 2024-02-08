@@ -25,11 +25,7 @@ class FeaturedTableSeeder extends Seeder
             $featured = [
                 'title' => $faker->sentence,
                 'description' => $faker->paragraph,
-                'price' => $faker->randomFloat(2, 10, 100),
-                'adminName' => 'admin' . $faker->numberBetween(1, 5), // Change to numberBetween
-                'category' => $faker->word,
-                'image' => json_encode([$faker->imageUrl(), $faker->imageUrl(), $faker->imageUrl(), $faker->imageUrl()]),
-                'stock' => $faker->randomFloat(2, 10, 100),
+                'image' => $faker->imageUrl(),
             ];
     
             $featured['slug'] = Str::slug($featured['title']); // Generate slug from title

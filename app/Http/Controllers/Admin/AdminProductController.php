@@ -119,10 +119,13 @@ public function store(Request $request)
         if ($request->hasFile('image')) {
             $images = [];
 
-            foreach ($request->file('image') as $image) {
-                // Handle image upload and storage logic
-                $path = $image->store('image');
-                $images[] = $path;
+            foreach ($request->file('images') as $image) {
+                // Store the image in the 'public' disk under the 'images' directory
+                $path = $image->store('public/images');
+                // Get the public URL of the stored image
+                $url = Storage::url($path);
+                // Add the public URL to the array of images
+                $images[] = $url;
             }
 
             // Save the image paths to the product

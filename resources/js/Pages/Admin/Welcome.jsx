@@ -8,12 +8,12 @@ export default function Welcome({
     phpVersion,
 }) {
     const { auth } = usePage().props;
-    console.log(auth);
+
     // if (!auth.user) {
     //     router.visit('/admin/auth/login');
     //     return null;
     // }
-    router.get('Admin/AdminDashboard')
+    // router.get('Admin/AdminDashboard')
     return (
         <>
             <AdminAuthenticated user={auth.user}>

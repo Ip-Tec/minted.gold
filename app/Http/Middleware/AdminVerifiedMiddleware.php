@@ -19,7 +19,7 @@ class AdminVerifiedMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $user = $request->user();
+        $user = $request->user("adminWeb");
 
         // if ($user instanceof MustVerifyEmail && !$user->hasVerifiedEmail()) {
         //     // If the user is not verified, redirect to the admin login route

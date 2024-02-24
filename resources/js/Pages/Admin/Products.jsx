@@ -18,7 +18,7 @@ function Products({ products, auth, categories }) {
     const [deleteProductImg, setDeleteProductImg] = useState("../logo.jpg");
     const [isAddProductVisible, setIsAddProductVisible] = useState(false);
     const {
-        data: formData,  // Rename 'data' to 'formData' to avoid conflicts
+        data: formData, // Rename 'data' to 'formData' to avoid conflicts
         setData,
         delete: destroy,
         processing,
@@ -42,7 +42,7 @@ function Products({ products, auth, categories }) {
         setIsAddProductVisible(false);
         setEditingProduct(null);
     };
-    console.log(products);
+    // console.log(products);
 
     const handleDeleteClick = (productId, productImg) => {
         setDeleteProductId(productId);
@@ -79,8 +79,8 @@ function Products({ products, auth, categories }) {
     const isAdminOwner = (product) => {
         // Replace 'your-admin-email@example.com' with the actual email of the logged-in admin
         return (
-            auth.user.email === "your-admin-email@example.com" &&
-            auth.user.id === product.adminId
+            auth.email === "your-admin-email@example.com" &&
+            auth.id === product.adminId
         );
     };
 
@@ -97,9 +97,10 @@ function Products({ products, auth, categories }) {
         setIsAddProductVisible(!isAddProductVisible);
     };
 
+    // console.log({ auth });
     return (
         <>
-            <AdminAuthenticated user={auth.user}>
+            <AdminAuthenticated user={auth}>
                 <Head title="Product" />
                 <div className="px-8 py-4 w-full">
                     <div className="flex flex-col justify-between items-end">

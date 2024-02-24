@@ -21,13 +21,9 @@ export default function Featured({ products }) {
     useEffect(() => {
         // Preload all images
         const imagePromises = products.map((product, index) => {
-            if (!Array.isArray(product.image)) {
-                var image = JSON.parse(product.image);
-                product.image = image;
-            }
             return new Promise((resolve, reject) => {
                 const img = new window.Image();
-                img.src = `${product?.image?.[0]}`;
+                img.src = product.image; // Update this line to use the product.image directly
                 img.onload = () => {
                     setImageLoaded((prev) => {
                         const newLoaded = [...prev];
@@ -39,10 +35,11 @@ export default function Featured({ products }) {
                 img.onerror = reject;
             });
         });
-
+    
         // Wait for all images to be loaded
         Promise.all(imagePromises);
     }, [products]);
+    
 
     const product = products[currentIndex];
     const slideStyle = {

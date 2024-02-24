@@ -11,16 +11,6 @@ export default function AdminAuthenticated({ user, children }) {
     const [showingNavigationDropdown, setShowingNavigationDropdown] =
         useState(false);
 
-    if (!auth.user) {
-        auth.user = {
-            name: "Peter Innocent",
-            email: "Peter@Innocent@peter.com",
-        };
-
-        // router.visit(route("admin.login"));
-        // return null;
-    }
-
     return (
         <div className="min-h-screen bg-gray-100 w-full flex flex-col">
             <nav className="bg-yellow-600 text-white border-b border-gray-100">
@@ -58,7 +48,7 @@ export default function AdminAuthenticated({ user, children }) {
                                                     type="button"
                                                     className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150"
                                                 >
-                                                    {auth.user.name}
+                                                    {auth.name}
                                                     <svg
                                                         className="ms-2 -me-0.5 h-4 w-4"
                                                         xmlns="http://www.w3.org/2000/svg"
@@ -156,10 +146,10 @@ export default function AdminAuthenticated({ user, children }) {
                     <div className="pt-4 pb-1 border-t border-gray-200">
                         <div className="px-4">
                             <div className="font-medium text-base hover:text-gray-800">
-                                {auth.user.name}
+                                {auth.name}
                             </div>
                             <div className="font-medium text-sm hover:text-gray-500">
-                                {auth.user.email}
+                                {auth.email}
                             </div>
                         </div>
 

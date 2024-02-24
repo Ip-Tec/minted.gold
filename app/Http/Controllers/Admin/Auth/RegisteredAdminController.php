@@ -21,7 +21,7 @@ class RegisteredAdminController extends Controller
      */
     public function create(): Response
     {
-        return Inertia::render('Admin/Auth/Register');
+        return Inertia::render('Admin/Auth/Register', ['message' => 'Admin Registion Page']);
     }
 
     /**
@@ -34,24 +34,32 @@ class RegisteredAdminController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|lowercase|email|max:255|unique:' . Admin::class,
-            'role' => 'required|string|lowercase|unique:' . Admin::class,
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
 
-        $user = Admin::create([
+        $attributes = [
             'name' => $request->name,
-            'role' => $request->role,
+            'provider' => 'provider',
             'email' => $request->email,
+            'username' => $request->name,
             'password' => Hash::make($request->password),
-        ]);
+        ];
 
-        event(new Registered($user));
+        // Set the role to 'admin' only if it's not provided in the request
+        if (!$request->has('role')) {
+            $attributes['role'] = 'admin';
+        }
 
-        // Auth::login($user);
+        $admin = Admin::create($attributes);
+
+
+
+        // event(new Registered($admin));
+
 
         return Inertia::render('Admin/Auth/Register', [
             'message' => 'Registion successfull',
-            'user' => $user
+            'user' => $admin
         ]);
     }
 }

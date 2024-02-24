@@ -5,14 +5,14 @@ import ProductDisplay from "@/Components/Product/ProductDisplay";
 import React, { useState } from "react"; // Add this line
 import { useForm } from "@inertiajs/react";
 
-function AdsForm({ adData }) {
-    const [imagePreview, setImagePreview] = useState(adData.image);
+function AdsForm({ adData, adsNumber }) {
+    const [imagePreview, setImagePreview] = useState(adData?.image || null); // Use optional chaining (?.) to safely access adData.image
     const { data, setData, post, reset } = useForm({
         // Assuming other form fields here
         image: null,
     });
 
-    console.log({adData});
+    console.log({ adData });
 
     const handleImageClick = () => {
         document.getElementById("imageInput").click();
@@ -49,7 +49,7 @@ function AdsForm({ adData }) {
                     console.log("Ad updated successfully");
                     // Reset the form and image preview after successful submission
                     reset();
-                    setImagePreview(adData.image);
+                    setImagePreview(adData?.image || null); // Reset to null if adData.image is not present
                 },
                 onError: (errors) => {
                     console.error("Error updating ad:", errors);
@@ -61,12 +61,14 @@ function AdsForm({ adData }) {
     return (
         <form onSubmit={submit}>
             <div className="w-full">
-                <h1 className="text-2xl py-3">Ads 1</h1>
-                <img
-                    src={imagePreview}
-                    className="w-full h-[18rem] cursor-pointer"
-                    onClick={handleImageClick}
-                />
+                <h1 className="text-2xl py-3">Ads {adsNumber}</h1>
+                {imagePreview && ( // Add a check to render imagePreview only if it exists
+                    <img
+                        src={imagePreview}
+                        className="w-full h-[18rem] cursor-pointer"
+                        onClick={handleImageClick}
+                    />
+                )}
                 <input
                     type="file"
                     id="imageInput"
@@ -81,7 +83,6 @@ function AdsForm({ adData }) {
     );
 }
 
-
 export default function WebsiteSetting({
     product,
     featured,
@@ -92,12 +93,12 @@ export default function WebsiteSetting({
     console.log(auth);
     console.log();
     // console.log({featured, productDisplay, ComponentAdsOne});
-    console.log({ComponentAdsOne});
+    console.log({ ComponentAdsOne });
 
     const jsonlizy = (data) => {
         return JSON.parse(data);
     };
-    
+
     const submit = (e) => {
         e.preventDefault();
     };
@@ -108,8 +109,8 @@ export default function WebsiteSetting({
                 <h1 className="text-2xl p-3">Website Setting</h1>
                 <div className="w-full">
                     <WebsiteSettingFeatured products={featured} />
-                    <AdsForm adData={ComponentAdsOne[0]} />
-                    <AdsForm adData={ComponentAdsOne[1]} />
+                    <AdsForm adData={ComponentAdsOne[0]} adsNumber={1} />
+                    <AdsForm adData={ComponentAdsOne[1]} adsNumber={2} />
                 </div>
             </AdminAuthenticated>
         </>

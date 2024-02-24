@@ -3,24 +3,24 @@
 namespace App\Http\Controllers\Admin\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Auth\LoginRequest;
+use App\Http\Requests\Auth\AdminLoginRequest;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Inertia\Response;
 
 class AdminAuthenticatedSessionController extends Controller
 {
+
     /**
      * Display the login view.
      */
     public function create(): Response
     {
         return Inertia::render('Admin/Auth/Login', [
-            'canResetPassword' => Route::has('admin.password.request'),
+            'canResetPassword' => false,
             'status' => session('status'),
         ]);
     }
@@ -28,21 +28,24 @@ class AdminAuthenticatedSessionController extends Controller
     /**
      * Handle an incoming authentication request.
      */
-    public function store(LoginRequest $request): RedirectResponse
+    public function store(AdminLoginRequest $request): RedirectResponse
     {
-        $request->authenticate('admin');
+        
+        $request->authenticate();
 
         $request->session()->regenerate();
+        
 
         return redirect()->intended(RouteServiceProvider::AdminHOME);
     }
+
 
     /**
      * Destroy an authenticated session.
      */
     public function destroy(Request $request): RedirectResponse
     {
-        Auth::guard('admin')->logout();
+        Auth::guard('adminWeb')->logout();
 
         $request->session()->invalidate();
 

@@ -69,7 +69,7 @@ export default function SideNav({ show }) {
                 </ResponsiveNavLink>
                 <ResponsiveNavLink
                     href={route("admin.profile.index")}
-                    active={route().current("admin.dashboard")}
+                    active={route().current("admin.setting")}
                     className="text-black flex h-16 items-center justify-between"
                 >
                     <Setting classname={activeIcon} strok={1.5} />

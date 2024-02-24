@@ -40,13 +40,13 @@ return [
             'driver' => 'session',
             'provider' => 'users',
         ],
-    
-        'admin' => [
+
+        'adminWeb' => [
             'driver' => 'session',
             'provider' => 'admins',
         ],
     ],
-    
+
 
     /*
     |--------------------------------------------------------------------------
@@ -70,7 +70,7 @@ return [
             'driver' => 'eloquent',
             'model' => App\Models\User::class,
         ],
-    
+
         'admins' => [
             'driver' => 'eloquent',
             'model' => App\Models\Admin::class,
@@ -108,6 +108,13 @@ return [
             'expire' => 60,
             'throttle' => 60,
         ],
+        
+        'admins' => [
+            'provider' => 'admins',
+            'table' => 'password_reset_tokens',
+            'expire' => 40,
+            'throttle' => 40,
+        ],
     ],
 
     /*
@@ -121,6 +128,6 @@ return [
     |
     */
 
-    'password_timeout' => 10800,
+    'password_timeout' => 10000,
 
 ];

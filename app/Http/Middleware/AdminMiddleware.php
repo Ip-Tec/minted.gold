@@ -3,29 +3,25 @@
 namespace App\Http\Middleware;
 
 use Closure;
+use Illuminate\Auth\Middleware\Authenticate as Middleware;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Symfony\Component\HttpFoundation\Response;
 
-class AdminMiddleware
+class AdminMiddleware extends Middleware
 {
     /**
      * Handle an incoming request.
      *
-     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \Closure  $next
+     * @param  string|null  $guard
+     * @return mixed
      */
-    public function handle(Request $request, Closure $next): Response
+    public function handle($request, Closure $next, $guard = null)
     {
-        // Check if the user is authenticated as an admin
-        // if (!$request->user('admin')) {
-        //     // Redirect to admin login route
-        //     return redirect()->route('admin.login');
-        // }
-
-        if (!Auth::guard('admin')->check()) {
-            return redirect('admin/login');
+        if (!Auth::guard('adminWeb')->check()) {
+            return redirect()->route('admin.login');
         }
-        
 
         return $next($request);
     }
@@ -33,8 +29,8 @@ class AdminMiddleware
     /**
      * Get the path the user should be redirected to when they are not authenticated.
      */
-    // protected function redirectTo(Request $request): ?string
-    // {
-    //     return $request->expectsJson() ? null : route('admin.login');
-    // }
+    protected function redirectTo($request): ?string
+    {
+        return $request->expectsJson() ? null : route('admin.login');
+    }
 }

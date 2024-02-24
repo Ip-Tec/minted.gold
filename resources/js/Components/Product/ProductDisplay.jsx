@@ -4,7 +4,6 @@ import ProductBox from "@/Components/Product/ProductBox";
 import { useContext, useState, useEffect } from "react";
 
 export default function ProductDisplay({ products, HeadingName }) {
-//   const { addProduct } = useContext(CartContext);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [imageLoaded, setImageLoaded] = useState(
     Array(products.length).fill(false)
@@ -26,33 +25,7 @@ export default function ProductDisplay({ products, HeadingName }) {
           // Convert the image to an array
           product.image = JSON.parse(product.image);
         }
-          product.image = useEffect(() => {
-            // Preload all images
-            const imagePromises = products.map((product, index) => {
-              return new Promise((resolve, reject) => {
-                if (typeof product.image === 'string') {
-                  // Convert the image to an array
-                  product.image = [product.image];
-                }
-                const img = new window.Image();
-                img.src = product.image[0]; // Assuming the first item in the array is the image URL
-                img.onload = () => {
-                  setImageLoaded((prev) => {
-                    const newLoaded = [...prev];
-                    newLoaded[index] = true;
-                    return newLoaded;
-                  });
-                  resolve();
-                };
-                img.onerror = reject;
-              });
-            });
-          
-            // Wait for all images to be loaded
-            Promise.all(imagePromises);
-          }, [products]);
-          
-    
+        
         const img = new window.Image();
         img.src = product.image[0]; // Assuming the first item in the array is the image URL
         img.onload = () => {
@@ -70,19 +43,19 @@ export default function ProductDisplay({ products, HeadingName }) {
     // Wait for all images to be loaded
     Promise.all(imagePromises);
   }, [products]);
-  
 
   const product = products[currentIndex];
   const slideStyle = {
     display: "flex",
-    width: `414%`,
-    transform: `translateX(${-currentIndex * (50 / products.length)}%)`,
+    width: `${products.length * 100}%`,
+    transform: `translateX(${-currentIndex * (100 / products.length)}%)`,
     transition: "transform 1.5s ease-in-out", // Add smooth transition effect
   };
+
   return (
     <div className="flex-col relative overflow-x-hidden h-auto w-auto">
       <h2 className="text-2xl my-6 mx-auto font-normal text-center text-gray-800 w-full">
-        { HeadingName ? HeadingName : "Product Display"}
+        {HeadingName ? HeadingName : "Product Display"}
       </h2>
       <div className="flex overflow-x-hidden" style={slideStyle}>
         {products?.length > 0 &&
@@ -95,7 +68,9 @@ export default function ProductDisplay({ products, HeadingName }) {
           {products.map((_, index) => (
             <span
               key={index}
-              className={`dot hover:cursor-pointer ${index === currentIndex ? "active" : ""}`}
+              className={`dot hover:cursor-pointer ${
+                index === currentIndex ? "active" : ""
+              }`}
               onClick={() => setCurrentIndex(index)}
             ></span>
           ))}
@@ -104,3 +79,4 @@ export default function ProductDisplay({ products, HeadingName }) {
     </div>
   );
 }
+

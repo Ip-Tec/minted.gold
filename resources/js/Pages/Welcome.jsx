@@ -5,6 +5,8 @@ import Featured from "@/Components/Product/Featured";
 import NewProducts from "@/Components/Product/NewProducts";
 import ProductIndex from "./Product/Index";
 import Guest from "@/Layouts/GuestLayout";
+import ProductDisplay from "@/Components/Product/ProductDisplay";
+import Pagination from "@/Components/Navegation/Pagination";
 
 export default function Welcome({
     auth,
@@ -12,19 +14,16 @@ export default function Welcome({
     phpVersion,
     Featureds,
     newProducts,
+    products,
+    productsDisplay,
+    productsFeatured,
 }) {
-    
+    console.log({ products, productsDisplay, productsFeatured });
     return (
         <>
-            <Guest>
-                <Head title="Welcome" />
-
-                <NavBar />
-                <p className="mt-20 p-2">{laravelVersion}</p>
-                {/* <p>{phpVersion}</p> */}
-                {/* <ProductIndex products={newProducts} /> */}
-                <Footer />
-            </Guest>
+            {/* <Guest> */}
+              <ProductIndex auth={auth} products={products} productsDisplay={productsDisplay} productsFeatured={productsFeatured}/>
+            {/* </Guest> */}
         </>
     );
 }

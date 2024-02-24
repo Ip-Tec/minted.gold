@@ -21,20 +21,20 @@ use App\Http\Controllers\AdminProfileController;
 // Admin Route
 require __DIR__ . '/adminWeb.php';
 
-Route::get('/', function () {
-    // Call the index method of ProductController to get data
-    $productController = app(ProductController::class);
-    $newProductsData = $productController->index();
+// Route::get('/', function () {
+//     // Call the index method of ProductController to get data
+//     $productController = app(ProductController::class);
+//     $newProductsData = $productController->index();
 
-    return Inertia::render('Welcome', [
-        'canLogin' => Route::has('login'),
-        'canRegister' => Route::has('register'),
-        'laravelVersion' => Application::VERSION,
-        'phpVersion' => PHP_VERSION,
-        'Featureds' => [ProductController::class, 'index'],
-        'newProducts' => Route::get('', [ProductController::class, 'index']),
-    ]);
-})->name("welcome");
+//     return Inertia::render('Welcome', [
+//         'canLogin' => Route::has('login'),
+//         'canRegister' => Route::has('register'),
+//         'laravelVersion' => Application::VERSION,
+//         'phpVersion' => PHP_VERSION,
+//         'Featureds' => [ProductController::class, 'index'],
+//         'newProducts' => Route::get('', [ProductController::class, 'index']),
+//     ]);
+// })->name("welcome");
 
 Route::get('/', [ProductController::class, 'index'])->name('products.index');
 
@@ -68,6 +68,3 @@ Route::middleware('auth')->group(function () {
 
 // Auth Route
 require __DIR__ . '/auth.php';
-
-
-// require __DIR__ . '/admin.php';

@@ -10,7 +10,7 @@ import FlashMessage from "@/Components/FlashMessage";
 
 function Categories({ canLogin, categories, phpVersion }) {
     const { auth } = usePage().props;
-    // console.log(auth);
+    // auth(auth);
     const [searchTerm, setSearchTerm] = useState("");
     const [deleteCategories, setDeleteCategories] = useState(null);
     const [deleteCategoriesId, setDeleteCategoriesId] = useState(null);
@@ -83,8 +83,8 @@ function Categories({ canLogin, categories, phpVersion }) {
     const isAdminOwner = (product) => {
         // Replace 'your-admin-email@example.com' with the actual email of the logged-in admin
         return (
-            auth.user.email === "your-admin-email@example.com" &&
-            auth.user.id === product.adminId
+            auth.email === "your-admin-email@example.com" &&
+            auth.id === product.adminId
         );
     };
 
@@ -105,7 +105,7 @@ function Categories({ canLogin, categories, phpVersion }) {
 
     return (
         <>
-            <AdminAuthenticated user={auth.user}>
+            <AdminAuthenticated user={auth}>
                 <Head title="Category" />
                 <div className="px-8 py-4 w-full">
                     <div className="flex flex-col justify-between items-end">

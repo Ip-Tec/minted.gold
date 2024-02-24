@@ -15,7 +15,7 @@ const AddProductForm = ({ auth, categories, product }) => {
         category: "",
         description: "",
         images: [],
-        adminName: auth.user.email,
+        adminName: auth.email,
     });
     const [categoriesData, setCategoriesData] = useState(categories);
 

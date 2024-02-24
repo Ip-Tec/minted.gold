@@ -11,6 +11,7 @@ use App\Models\User;
 use App\Models\WebSetting\Featured;
 use App\Models\WebSetting\ProductDisplay;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 
 class ProductController extends Controller
@@ -26,16 +27,11 @@ class ProductController extends Controller
         $reviews = Review::with('product')->paginate(10);
 
         // Include authenticated user data
-        $fakeUser = (object) [
-            'user' => [
-                'name' => 'Peter Innocent',
-                'email' => 'peterinnocent@peter.peter'
-            ]
-        ];
-
+        $user = auth()->user();
+        // dd($user);
         return Inertia::render('Admin/AdminDashboard', [
             'reviews' => $reviews,
-            'auth' => $user ?? $fakeUser,
+            'auth' => $user,
             'totalOrders' => $totalOrders,
             'totalProducts' => $totalProducts,
             'totalUsers' => $totalUsers,
@@ -50,6 +46,7 @@ class ProductController extends Controller
         $productsDisplay = ProductDisplay::paginate(10);
 
         // Include authenticated user data
+        // dd($products, $productsDisplay, $productsFeatured);
         $user = auth()->user();
 
         return Inertia::render('Product/Index', [

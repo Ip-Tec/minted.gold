@@ -13,15 +13,18 @@ return new class extends Migration
     {
         Schema::create('admins', function (Blueprint $table) {
             $table->id();
-            $table->string('username')->unique();
+            $table->string('name');
+            $table->string('username')->unique()->nullable();
             $table->string('email')->unique();
+            $table->string('role');
             $table->string('provider');
-            $table->string('adminrole');
-            $table->string('name')->default('');
+            $table->timestamp('email_verified_at')->nullable();
+            $table->string('password');
+            $table->rememberToken();
             // Add other fields as needed
             $table->timestamps();
 
-            $table->index('adminrole', 'Admin_adminrole_fkey');
+            $table->index('role', 'Admin_adminrole_fkey');
         });
     }
 

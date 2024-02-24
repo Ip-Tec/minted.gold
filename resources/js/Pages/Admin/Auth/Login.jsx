@@ -1,6 +1,6 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import Checkbox from "@/Components/Checkbox";
-import AdminGuestLayout from '@/Admin/Layout/AdminGuestLayout';
+import AdminGuestLayout from "@/Admin/Layout/AdminGuestLayout";
 import InputError from "@/Components/InputError";
 import InputLabel from "@/Components/InputLabel";
 import PrimaryButton from "@/Components/PrimaryButton";
@@ -8,6 +8,7 @@ import TextInput from "@/Components/TextInput";
 import { Head, Link, useForm } from "@inertiajs/react";
 import NavBar from "@/Components/Navegation/NavBar";
 import Footer from "./Footer";
+import Toast from "@/Components/Toast";
 
 export default function Login({ auth, status, canResetPassword }) {
     const { data, setData, post, processing, errors, reset } = useForm({
@@ -16,22 +17,29 @@ export default function Login({ auth, status, canResetPassword }) {
         remember: false,
     });
 
+    const toast = useRef(null);
+
     useEffect(() => {
         return () => {
             reset("password");
         };
     }, []);
 
-    const submit = (e) => {
+    const submit = async (e) => {
         e.preventDefault();
 
-        post(route("login"));
+        try {
+            console.log(route("login.admin"));
+            const da = await post(route("login.admin"));
+        } catch (error) {
+            toast.current.showError(`Registration error: ${error.message}`);
+        }
     };
 
     return (
         <AdminGuestLayout>
             <h1>Admin Login</h1>
-            <Head title="Log in" />
+            <Head title="Login" />
 
             {status && (
                 <div className="mb-4 font-medium text-sm text-green-600">
@@ -39,6 +47,7 @@ export default function Login({ auth, status, canResetPassword }) {
                 </div>
             )}
             <form onSubmit={submit}>
+                
                 <div>
                     <InputLabel htmlFor="email" value="Email" />
 
@@ -96,12 +105,19 @@ export default function Login({ auth, status, canResetPassword }) {
                             Forgot your password?
                         </Link>
                     )}
-
+                    <Link
+                        href={route("admin.register")}
+                        className="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                    >
+                        Register
+                    </Link>
                     <PrimaryButton className="ms-4" disabled={processing}>
                         Log in
                     </PrimaryButton>
                 </div>
             </form>
+            {/* Toast component */}
+            <Toast ref={toast} />
             <Footer />
         </AdminGuestLayout>
     );

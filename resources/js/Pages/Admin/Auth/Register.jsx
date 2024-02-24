@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import AdminGuestLayout from "@/Admin/Layout/AdminGuestLayout";
 import InputError from "@/Components/InputError";
 import InputLabel from "@/Components/InputLabel";
@@ -6,19 +6,18 @@ import PrimaryButton from "@/Components/PrimaryButton";
 import TextInput from "@/Components/TextInput";
 import { Head, Link, useForm } from "@inertiajs/react";
 import Footer from "./Footer";
+import Toast from "@/Components/Toast";
 
 export default function Register({ user, message }) {
+    console.log({ message });
+
     const { data, setData, post, processing, errors, reset } = useForm({
         name: "",
         email: "",
         password: "",
         password_confirmation: "",
     });
-
-    if (message) {
-        router.visit(route("admin.login"));
-        return null;
-    }
+    const toast = useRef(null);
 
     useEffect(() => {
         return () => {
@@ -26,10 +25,27 @@ export default function Register({ user, message }) {
         };
     }, []);
 
-    const submit = (e) => {
+    const submit = async (e) => {
         e.preventDefault();
+        try {
+            await post(route("admin.register"));
+            console.log({ errors });
+            console.log(Object.keys(errors).length);
+            if (Object.keys(errors).length == 0) {
+                // Show success message or perform any other action as needed
+                toast.current.showSuccess("Registration successful!");
 
-        post(route("admin.register"));
+                // Redirect to the login page after a delay
+                setTimeout(() => {
+                    window.location.href = route("admin.login");
+                    route("admin.login");
+                    console.log(route("admin.login"));
+                }, 200);
+            }
+        } catch (error) {
+            toast.current.showError(`Registration error: ${error.message}`);
+            // Handle errors if necessary
+        }
     };
 
     return (
@@ -122,10 +138,12 @@ export default function Register({ user, message }) {
                     </Link>
 
                     <PrimaryButton className="ms-4" disabled={processing}>
-                        Register
+                        {processing ? "Loading..." : "Register"}
                     </PrimaryButton>
                 </div>
             </form>
+            {/* Toast component */}
+            <Toast ref={toast} />
             <Footer />
         </AdminGuestLayout>
     );

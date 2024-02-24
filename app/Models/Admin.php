@@ -9,9 +9,9 @@ use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 
-class Admin extends Authenticatable
+class Admin extends Authenticatable implements MustVerifyEmail
 {
-    use HasApiTokens, HasFactory, Notifiable, MustVerifyEmail;
+    use HasApiTokens, HasFactory, Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -23,8 +23,9 @@ class Admin extends Authenticatable
         'name',
         'role',
         'email',
-        'name_name',
+        'provider',
         'password',
+        'username',
         'phone_number',
     ];
 
@@ -47,13 +48,4 @@ class Admin extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
-
-    /**
-     * The attributes table name.
-     *
-     * @var string
-     */
-    protected $db = 'admins';
-    protected $table = 'admins';
-    protected $database = 'admins';
 }

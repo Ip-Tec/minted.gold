@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Admin\Category;
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
@@ -19,6 +20,7 @@ class AdminProductController extends Controller
         $products = Product::paginate(28);
 
         return Inertia::render('Admin/Products', [
+            'auth' => Auth::user(),
             'products' => $products,
             'categories' => $categories,
         ]);

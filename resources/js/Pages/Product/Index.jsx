@@ -17,7 +17,7 @@ const ProductIndex = ({
     productsFeatured,
     auth,
 }) => {
-    console.log({productsFeatured})
+    console.log({ products, productsDisplay, productsFeatured, auth });
     return (
         <>
             <MyGuestLayout>

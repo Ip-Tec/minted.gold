@@ -4,10 +4,11 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 
 export default function Dashboard({ auth }) {
     return (
-        <AuthenticatedLayout
+        <>
+        {/* <AuthenticatedLayout
             user={auth.user}
             header={<h2 className="font-semibold text-lg text-gray-800 leading-tight">Gold Price: $1200</h2>}
-        >
+        > */}
             <Head title="Dashboard" />
 
             <div className="py-12">
@@ -18,6 +19,7 @@ export default function Dashboard({ auth }) {
                 </div>
             </div>
             <Footer />
-        </AuthenticatedLayout>
+        {/* </AuthenticatedLayout> */}
+        </>
     );
 }

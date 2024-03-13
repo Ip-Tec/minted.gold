@@ -42,7 +42,7 @@ function Products({ products, auth, categories }) {
         setIsAddProductVisible(false);
         setEditingProduct(null);
     };
-    // console.log(products);
+    console.log(products);
 
     const handleDeleteClick = (productId, productImg) => {
         setDeleteProductId(productId);
@@ -78,10 +78,7 @@ function Products({ products, auth, categories }) {
 
     const isAdminOwner = (product) => {
         // Replace 'your-admin-email@example.com' with the actual email of the logged-in admin
-        return (
-            auth.email === "your-admin-email@example.com" &&
-            auth.id === product.adminId
-        );
+        return auth.email === product.adminName;
     };
 
     const truncateString = (str, maxLen) => {
@@ -97,7 +94,7 @@ function Products({ products, auth, categories }) {
         setIsAddProductVisible(!isAddProductVisible);
     };
 
-    // console.log({ auth });
+    // console.log({ products });
     return (
         <>
             <AdminAuthenticated user={auth}>
@@ -166,14 +163,14 @@ function Products({ products, auth, categories }) {
                         <tbody className="bg-white divide-y divide-gray-200">
                             {filteredProducts.map((product) => (
                                 <tr key={product.id}>
-                                    <td className="px-4 py-2 whitespace-nowrap">
+                                    <td className="p-1 whitespace-nowrap">
                                         <span>{product.id}</span>
                                     </td>
-                                    <td className="px-6 py-4 whitespace-nowrap">
+                                    <td className="p-2 whitespace-nowrap rounded-full">
                                         <img
                                             src={product.image[0]} // Update with your image field
                                             alt={product.title}
-                                            className="w-16 h-16 object-cover"
+                                            className="w-16 h-16 object-cover rounded-full"
                                         />
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap">
@@ -202,29 +199,29 @@ function Products({ products, auth, categories }) {
                                         </div>
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap">
-                                        {/* {isAdminOwner(product) && ( */}
-                                        <>
-                                            <button
-                                                className="text-blue-500 hover:underline"
-                                                onClick={() =>
-                                                    handleEditClick(product)
-                                                }
-                                            >
-                                                Edit
-                                            </button>
-                                            <button
-                                                onClick={() =>
-                                                    handleDeleteClick(
-                                                        product.id,
-                                                        product.image[0]
-                                                    )
-                                                }
-                                                className="ml-2 text-red-500 hover:underline"
-                                            >
-                                                Delete
-                                            </button>
-                                        </>
-                                        {/* )} */}
+                                        {isAdminOwner(product) && (
+                                            <>
+                                                <button
+                                                    className="text-blue-500 hover:underline"
+                                                    onClick={() =>
+                                                        handleEditClick(product)
+                                                    }
+                                                >
+                                                    Edit
+                                                </button>
+                                                <button
+                                                    onClick={() =>
+                                                        handleDeleteClick(
+                                                            product.id,
+                                                            product.image[0]
+                                                        )
+                                                    }
+                                                    className="ml-2 text-red-500 hover:underline"
+                                                >
+                                                    Delete
+                                                </button>
+                                            </>
+                                        )}
                                     </td>
                                 </tr>
                             ))}

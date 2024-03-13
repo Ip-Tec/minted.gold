@@ -17,7 +17,7 @@ class AdminMiddleware extends Middleware
      * @param  string|null  $guard
      * @return mixed
      */
-    public function handle($request, Closure $next, $guard = null)
+    public function handle($request, Closure $next, ...$guards)
     {
         if (!Auth::guard('adminWeb')->check()) {
             return redirect()->route('admin.login');

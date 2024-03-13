@@ -106,6 +106,8 @@ Route::middleware(['auth:adminWeb'])->group(function () {
         Route::patch('/websiteSetting', [WebsiteSetting::class, 'update'])->name('admin.websiteSetting.update');
 
         Route::delete('/websiteSetting', [WebsiteSetting::class, 'destroy'])->name('admin.websiteSetting.destroy');
+
+        Route::post('/websiteSetting', [WebsiteSetting::class, 'adsComponent'])->name('admin.ads.update');
     });
 
 

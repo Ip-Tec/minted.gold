@@ -7,10 +7,12 @@ import ResponsiveNavLink from "@/Components/ResponsiveNavLink";
 import SideNav from "../AdminComponents/Navigation/SideNav";
 
 export default function AdminAuthenticated({ user, children }) {
-    const { auth } = usePage().props;
+    let { auth } = usePage().props;
     const [showingNavigationDropdown, setShowingNavigationDropdown] =
         useState(false);
-
+        if (auth.user){
+            auth = auth.user
+        }
     return (
         <div className="min-h-screen bg-gray-100 w-full flex flex-col">
             <nav className="bg-yellow-600 text-white border-b border-gray-100">

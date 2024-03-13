@@ -6,6 +6,12 @@ function WebsiteSettingFeatured({ products }) {
     const [imageLoaded, setImageLoaded] = useState(
         Array(products.length).fill(false)
     );
+    const isEmpty = products.length === 0;
+
+    // Define default title and description for Featured
+    const defaultTitle = "Featured";
+    const defaultDescription = "Add your featured products here.";
+
     const { data, setData, post, processing, errors, reset } = useForm({
         title: products[currentIndex]?.title || "",
         description: products[currentIndex]?.description || "",
@@ -65,24 +71,23 @@ function WebsiteSettingFeatured({ products }) {
 
     const handleImageChange = (e) => {
         const file = e.target.files[0];
-    
+
         if (file) {
             const reader = new FileReader();
             reader.onloadend = () => {
                 const imageDataUrl = reader.result;
                 // Set the image preview URL based on the current index
                 setImagePreview((prev) => {
-                    const newPreview = [...prev];
+                    const newPreview = [prev];
                     newPreview[currentIndex] = imageDataUrl;
                     return newPreview;
                 });
                 setData("image", file);
             };
-    
+
             reader.readAsDataURL(file);
         }
     };
-    
 
     const submit = (e) => {
         e.preventDefault();
@@ -112,86 +117,67 @@ function WebsiteSettingFeatured({ products }) {
         <div
             className={`text-gray-900 bg-gray-100 p-px max-h-max relative featured-slide z-40`}
         >
-            <form className="relative h-auto" onSubmit={submit}>
-                <div className="relative flex h-auto w-full z-10">
-                    {products.map((product, index) => (
-                        <div
-                            key={product.slug}
-                            className={`flex items-center justify-center relative w-full ${
-                                index === currentIndex ? "" : "hidden"
-                            }`}
-                        >
-                            <div className="w-full flex justify-center items-center h-auto">
-                                <div className="w-full h-auto relative">
-                                    <div className="flex flex-wrap justify-center h-full w-full items-center absolute p-2 transform z-20">
-                                        <div className="bg-gray-900 text-gray-300 bg-opacity-70 flex rounded-md p-6 justify-center items-center relative h-[80%] w-[80%] z-30">
-                                            <span className="absolute top-0.5 px-3 rounded-full bg-white text-black left-1 text-2xl">
-                                                {product.id}
-                                            </span>
-                                            <div className="w-[77%] h-[80%] z-30">
-                                                <input
-                                                    type="text"
-                                                    name="title"
-                                                    value={
-                                                        data.title ||
-                                                        product.title
-                                                    }
-                                                    onChange={handleInputChange}
-                                                    className="m-0 bg-transparent text-xl focus:outline-none mb-3"
-                                                />
-                                                <textarea
-                                                    rows="4"
-                                                    name="description"
-                                                    value={
-                                                        data.description ||
-                                                        product.description
-                                                    }
-                                                    onChange={handleInputChange}
-                                                    className="text-md bg-transparent md:w-3/4 focus:outline-none mt-3 resize-none"
-                                                />
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <img
-                                        src={
-                                            imagePreview ||
-                                            `${product?.image?.[0]}`
-                                        }
-                                        alt=""
-                                        width={1200}
-                                        height={800}
-                                        style={{
-                                            height: "32rem",
-                                            width: "100%",
-                                        }}
-                                        onClick={handleImageClick}
-                                    />
-                                    <input
-                                        type="file"
-                                        id="imageInput"
-                                        className="w-fu top-0 bg-opacity-40 z-40 absolte bg-slate-500 cursor-pointer"
-                                        onChange={handleImageChange}
-                                    />
+            {isEmpty ? (
+                <div className="text-center p-4">
+                    <h2 className="text-xl font-semibold">{defaultTitle}</h2>
+                    <p>{defaultDescription}</p>
+                    <button
+                        className="px-10 py-3 mt-4 text-gray-300 rounded-lg bg-blue-600 hover:bg-blue-400 hover:text-white"
+                        onClick={() => setCurrentIndex(0)}
+                    >
+                        Add Product
+                    </button>
+                </div>
+            ) : (
+                <div className="relative">
+                    <div className="slider-container">
+                        {products.map((product, index) => (
+                            <div
+                                key={product.slug}
+                                className={`slide ${
+                                    index === currentIndex ? "active" : ""
+                                }`}
+                                onClick={() => setCurrentIndex(index)}
+                            >
+                                <img
+                                    src={product.image}
+                                    alt={product.title}
+                                    onClick={handleImageClick}
+                                />
+                                <div className="product-info">
+                                    <h3>{product.title}</h3>
+                                    <p>{product.description}</p>
                                 </div>
                             </div>
-                        </div>
-                    ))}
+                        ))}
+                    </div>
+                    <div className="slider-controls">
+                        <button
+                            onClick={handlePrevProduct}
+                            disabled={currentIndex === 0}
+                        >
+                            Previous
+                        </button>
+                        <button
+                            onClick={handleNextProduct}
+                            disabled={currentIndex === products.length - 1}
+                        >
+                            Next
+                        </button>
+                    </div>
                 </div>
-                <div className="flex justify-between mt-4">
-                    <button
-                        onClick={handlePrevProduct}
-                        className="bg-blue-600 text-white rounded-lg px-10 py-3 hover:bg-blue-400"
-                    >
-                        Previous
-                    </button>
-                    <button
-                        onClick={handleNextProduct}
-                        className="bg-blue-600 text-white rounded-lg px-10 py-3 hover:bg-blue-400"
-                    >
-                        Next
-                    </button>
-                </div>
-                <button className="px-10 py-3 mt-4 text-gray-300 rounded-lg bg-blue-600 hover:bg-blue-400 hover:text-white">
+            )}
+            <form className="image-upload-form" onSubmit={submit}>
+                <input
+                    type="file"
+                    id="imageInput"
+                    style={{ display: "none" }}
+                    onChange={handleImageChange}
+                />
+                <button className="upload-button px-10 py-3 m-4 text-gray-300 rounded-lg bg-blue-600 hover:bg-blue-400 hover:text-white" onClick={handleImageClick}>
+                    Upload Image
+                </button>
+                <button className="save-button px-10 py-3 m-4 text-gray-300 rounded-lg bg-blue-600 hover:bg-blue-400 hover:text-white" type="submit">
                     Save
                 </button>
             </form>

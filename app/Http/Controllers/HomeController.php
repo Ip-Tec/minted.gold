@@ -16,17 +16,15 @@ class HomeController extends Controller
     public function index()
     {
         $user = auth()->user();
-        $cart = Cart::where('user_id', $user->id)->get();
 
-        // $cart = $user ? $user->cart : collect(); // Use collect() to avoid null issues
+        // Check if the user is authenticated
+        $cart = $user ? Cart::where('user_id', $user->id)->get() : collect(); // Use collect() to return an empty collection if not authenticated
+
         $categories = Category::all();
         $products = Product::paginate(10);
 
-
-        // dd($categories);
-
         return Inertia::render('Home', [
-            'CartItems' => CartResource::collection($cart),
+            'cartItems' => CartResource::collection($cart),
             'products' => $products,
             'categories' => $categories,
             'canLogin' => Route::has('login'),

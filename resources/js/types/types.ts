@@ -48,7 +48,8 @@ export interface PaginatedProducts {
 }
 
 export interface HomeProps {
-    CartItems: CartItems;
+    CartItem?: CartItems;
+    CartItems?: CartItems;
     categories: Category[];
     products: PaginatedProducts;
 }

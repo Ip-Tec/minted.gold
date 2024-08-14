@@ -10,7 +10,7 @@ import ApplicationLogo from "@/Components/ApplicationLogo";
 const appName = import.meta.env.VITE_APP_NAME || "Minted Golds";
 
 interface HeaderProps {
-    initialCartItems: CartItem[];
+    initialCartItems?: CartItem[];
 }
 
 const Header: React.FC<HeaderProps> = ({ initialCartItems }) => {

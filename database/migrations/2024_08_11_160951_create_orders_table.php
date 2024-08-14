@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->foreignId('product_id')->constrained()->onDelete('cascade');
-            $table->string('status')->default('pending'); // Example: pending, paid, delivered
+            $table->string('status', 191)->default('pending'); // Example: pending, paid, delivered
             $table->decimal('total_price', 10, 2);
             $table->timestamp('paid_at')->nullable();
             $table->timestamp('delivered_at')->nullable();

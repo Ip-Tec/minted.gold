@@ -13,9 +13,9 @@ return new class extends Migration
     {
         Schema::create('categories', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
+            $table->string('name', 191);
             $table->text('description')->nullable();
-            $table->string('image')->nullable();
+            $table->string('image', 191)->nullable();
             $table->foreignId('created_by')->constrained('admins')->onDelete('cascade');
             $table->timestamps();
         });

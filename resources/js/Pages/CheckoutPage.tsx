@@ -28,7 +28,7 @@ const CheckoutPage: React.FC<ViewPageProps> = ({
         <ToastProvider>
             <CartProvider>
                 <Head title="Checkout" />
-                <Header initialCartItems={CartItems.data} />
+                <Header initialCartItems={CartItems?.data || []} />
 
                 <Checkout
                     product={product}

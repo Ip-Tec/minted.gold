@@ -16,7 +16,7 @@ const Home: React.FC<HomeProps> = ({ products, categories, CartItem }) => {
         <div className="w-full overflow-x-hidden">
             <ToastProvider>
                 <CartProvider>
-                    <Header initialCartItems={CartItem?.data} />
+                    <Header initialCartItems={CartItem?.data || []} />
                     <HeroSection />
                     <ProductList products={products} categories={categories} />
                     <WhyBuyFromUs />

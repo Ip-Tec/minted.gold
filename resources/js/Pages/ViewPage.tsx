@@ -52,7 +52,7 @@ const ViewPage: React.FC<ViewPageProps> = ({
         <>
             <ToastProvider>
                 <CartProvider>
-                    <Header initialCartItems={CartItems} />
+                    <Header initialCartItems={CartItems || []} />
                     <div className="container mx-auto p-4 mt-12">
                         <ProductGallery
                             images={transformedImages}

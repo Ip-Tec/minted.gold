@@ -108,6 +108,7 @@ class CartController extends Controller
 
     public function checkout()
     {
+        $user = Auth::user();
         // Fetch cart items if the user is authenticated, otherwise return an empty collection
         $cartItems = Auth::check()
             ? CartResource::collection(Cart::where('user_id', Auth::id())->get())
@@ -123,7 +124,7 @@ class CartController extends Controller
 
         // Fetch wishlist items if the user is authenticated, otherwise return an empty collection
         $wishlist = Auth::check()
-            ? Auth::user()->wishlist()->with('product')->get()->pluck('product')
+            ? $user->wishlist()->with('product')->get()->pluck('product')
             : collect([]);
 
         // Render the checkout page with the required data

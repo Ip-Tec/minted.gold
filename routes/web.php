@@ -5,6 +5,7 @@ use App\Http\Controllers\WishlistController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\SearchController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\UserController;
@@ -25,6 +26,9 @@ Route::get('/view/{slug}', [ProductController::class, 'show'])->name("show.produ
 Route::get('/search/{slug}', function (string $slug) {
     return inertia('ViewPage');
 });
+
+Route::get('/search', [SearchController::class, 'search'])->name('search');
+
 Route::middleware(['auth', 'verified'])->group(function () {
 
     // Payment Route

@@ -81,3 +81,16 @@ export interface Order {
     product: Product;
     // Add other relevant properties for the order
 }
+
+export interface SearchResults {
+    data: Product[];
+    total: number;
+    per_page: number;
+    current_page: number;
+    last_page: number;
+}
+
+export interface SearchProps {
+    query: string;
+    results: SearchResults;
+}

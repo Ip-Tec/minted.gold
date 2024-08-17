@@ -117,13 +117,15 @@ const MainProductList: React.FC<MainProductListProps> = ({ products }) => {
     return (
         <div className="bg-white p-4">
             <h2 className="text-2xl font-bold mb-4">Products</h2>
-            <div className="mb-4">
-                <label className="block text-gray-700 mb-2">
-                    Filter by Rating:
+            <div className="mb-4 flex flex-wrap flex-row gap-4">
+                <div className="w-auto">
+                    <label className="block text-gray-700 mb-2">
+                        Filter by Rating:
+                    </label>
                     <select
                         value={selectedRating ?? ""}
                         onChange={handleRatingChange}
-                        className="ml-2 p-2 border rounded"
+                        className="w-full p-2 border rounded"
                     >
                         <option value="">All Ratings</option>
                         <option value="1">1 & Up</option>
@@ -132,17 +134,20 @@ const MainProductList: React.FC<MainProductListProps> = ({ products }) => {
                         <option value="4">4 & Up</option>
                         <option value="5">5</option>
                     </select>
-                </label>
-                <label className="block text-gray-700 mb-2">
-                    Filter by Max Price:
+                </div>
+                <div className="w-auto">
+                    <label className="block text-gray-700 mb-2">
+                        Filter by Max Price:
+                    </label>
                     <input
                         type="number"
                         value={maxPrice ?? ""}
                         onChange={handlePriceChange}
-                        className="ml-2 p-2 border rounded"
+                        className="w-full p-2 border rounded"
                     />
-                </label>
+                </div>
             </div>
+
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                 {filteredProducts.map((product) => (
                     <div

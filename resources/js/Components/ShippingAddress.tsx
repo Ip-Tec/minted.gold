@@ -77,7 +77,7 @@ const ShippingAddress = ({ auth }: PageProps) => {
     };
 
     return (
-        <div className="w-auto mx-auto p-6 bg-white dark:bg-gray-800 shadow-lg rounded-lg">
+        <div className="w-auto mx-auto p-6 bg-white dark:bg-gray-800">
             <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-4">
                 Shipping Address
             </h2>
@@ -192,7 +192,7 @@ const ShippingAddress = ({ auth }: PageProps) => {
                 <div className="mt-6">
                     <button
                         type="submit"
-                        className="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 rounded-md"
+                        className="w-1/3 bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 rounded-md"
                     >
                         Save Address
                     </button>

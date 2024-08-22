@@ -1,33 +1,55 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { PageProps } from "@/types";
-import { Head, useForm } from "@inertiajs/react";
+import { Head, usePage } from "@inertiajs/react";
 import AccountDetails from "@/Components/AccountDetails";
-import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import ShippingAddress from "@/Components/ShippingAddress";
+import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBars, faTimes } from "@fortawesome/free-solid-svg-icons";
+import {
+    faBars,
+    faTimes,
+    faUser,
+    faShippingFast,
+    faCreditCard,
+    faBoxOpen,
+    faHeart,
+} from "@fortawesome/free-solid-svg-icons";
+import Orders from "@/Components/Orders";
+import Wishlist from "@/Components/Wishlist";
 
 export default function Dashboard({ auth, ziggy }: PageProps) {
-    const [activeSection, setActiveSection] = useState<
-        "account" | "shipping" | "payment"
-    >("account");
-    const {get, post, data, setData} = useForm()
+    const { url, props } = usePage(); // Access page properties including URL
+    const queryParams = new URLSearchParams(url.split("?")[1]);
+    const sectionQuery = queryParams.get("q");
 
-    // State for storing the selected profile picture
+    const [activeSection, setActiveSection] = useState<
+        "account" | "shipping" | "orders" | "payment" | "wishlist"
+    >((sectionQuery as "account" | "shipping" | "orders" | "payment" | "wishlist") || "account");
+
     const [profilePicture, setProfilePicture] = useState<string>(
         auth.user.avatar || "https://via.placeholder.com/150"
     );
 
-    // State for toggling the sidebar
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
-    // Reference to the hidden file input element
     let fileInputRef: HTMLInputElement | null = null;
 
-    
+    useEffect(() => {
+        if (sectionQuery) {
+            setActiveSection(
+                sectionQuery as
+                    | "account"
+                    | "shipping"
+                    | "orders"
+                    | "payment"
+                    | "wishlist"
+            );
+        }
+    }, [sectionQuery]);
+
     const handleProfilePictureChange = () => {
         if (fileInputRef) {
-            fileInputRef.click(); // Trigger the file input click
+            fileInputRef.click();
         }
     };
 
@@ -36,7 +58,7 @@ export default function Dashboard({ auth, ziggy }: PageProps) {
         if (file) {
             const reader = new FileReader();
             reader.onloadend = () => {
-                setProfilePicture(reader.result as string); // Update the state with the preview URL
+                setProfilePicture(reader.result as string);
             };
             reader.readAsDataURL(file);
         }
@@ -50,30 +72,27 @@ export default function Dashboard({ auth, ziggy }: PageProps) {
                 return <ShippingAddress auth={auth} ziggy={ziggy} />;
             case "payment":
                 return <div>Payment Methods Component</div>;
+            case "orders":
+                return <Orders auth={auth} ziggy={ziggy} />;
+            case "wishlist":
+                return <Wishlist auth={auth} ziggy={ziggy} />;
             default:
                 return null;
         }
     };
 
     return (
-        <AuthenticatedLayout
-            user={auth.user}
-            header={
-                <h2 className="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-                    Dashboard
-                </h2>
-            }
-        >
+        <AuthenticatedLayout user={auth.user}>
             <Head title="Dashboard" />
 
-            <div className="flex h-screen overflow-hidden">
+            <div className="flex flex-col md:flex-row min-h-screen w-full">
                 {/* Sidebar */}
                 <div
-                    className={`inset-y-0 left-0 z-30 w-64 transform lg:transform-none bg-white dark:bg-gray-800 shadow-lg lg:relative lg:static transition-transform duration-300 ease-in-out ${
-                        isSidebarOpen ? "translate-x-0" : "-translate-x-full"
-                    } lg:translate-x-0`}
+                    className={`bg-white dark:bg-gray-800 shadow-lg lg:relative md:w-64 flex-shrink-0 transition-transform duration-300 ease-in-out md:static ${
+                        isSidebarOpen ? "block" : "hidden md:block"
+                    }`}
                 >
-                    <div className="flex flex-col items-center p-4 border-r border-gray-200 dark:border-gray-700">
+                    <div className="flex flex-col items-center p-4 border-b border-gray-200 dark:border-gray-700">
                         <div
                             className="relative cursor-pointer"
                             onClick={handleProfilePictureChange}
@@ -89,7 +108,6 @@ export default function Dashboard({ auth, ziggy }: PageProps) {
                                 </span>
                             </div>
                         </div>
-                        {/* Hidden file input for profile picture */}
                         <input
                             type="file"
                             ref={(ref) => (fileInputRef = ref)}
@@ -98,36 +116,61 @@ export default function Dashboard({ auth, ziggy }: PageProps) {
                             accept="image/*"
                         />
                         <nav className="mt-6 w-full">
-                            <ul className="flex flex-col gap-4">
+                            <ul className="flex md:flex-col gap-3 flex-nowrap">
                                 <li
-                                    className={`cursor-pointer ${
+                                    className={`cursor-pointer flex items-center gap-2 py-4 ${
                                         activeSection === "account"
                                             ? "text-blue-500 font-semibold"
                                             : "text-gray-500 dark:text-gray-400"
                                     }`}
                                     onClick={() => setActiveSection("account")}
                                 >
+                                    <FontAwesomeIcon icon={faUser} />
                                     Account Details
                                 </li>
                                 <li
-                                    className={`cursor-pointer ${
+                                    className={`cursor-pointer flex items-center gap-2 py-4 ${
                                         activeSection === "shipping"
                                             ? "text-blue-500 font-semibold"
                                             : "text-gray-500 dark:text-gray-400"
                                     }`}
                                     onClick={() => setActiveSection("shipping")}
                                 >
+                                    <FontAwesomeIcon icon={faShippingFast} />
                                     Shipping Address
                                 </li>
                                 <li
-                                    className={`cursor-pointer ${
+                                    className={`cursor-pointer flex items-center gap-2 py-4 ${
                                         activeSection === "payment"
                                             ? "text-blue-500 font-semibold"
                                             : "text-gray-500 dark:text-gray-400"
                                     }`}
                                     onClick={() => setActiveSection("payment")}
                                 >
+                                    <FontAwesomeIcon icon={faCreditCard} />
                                     Payment Methods
+                                </li>
+                                <li
+                                    className={`cursor-pointer flex items-center gap-2 py-4 ${
+                                        activeSection === "orders"
+                                            ? "text-blue-500 font-semibold"
+                                            : "text-gray-500 dark:text-gray-400"
+                                    }`}
+                                    onClick={() => setActiveSection("orders")}
+                                >
+                                    <FontAwesomeIcon icon={faBoxOpen} />
+                                    Orders
+                                </li>
+                                <li
+                                    className={`cursor-pointer flex items-center gap-2 py-4 ${
+                                        activeSection === "wishlist"
+                                            ? "text-blue-500 font-semibold"
+                                            : "text-gray-500 dark:text-gray-400"
+                                    }`}
+                                    onClick={() => setActiveSection("wishlist")}
+                                >
+                                    <FontAwesomeIcon icon={faHeart} />
+                                    My Wishlist
                                 </li>
                             </ul>
                         </nav>
@@ -135,8 +178,8 @@ export default function Dashboard({ auth, ziggy }: PageProps) {
                 </div>
 
                 {/* Main Content */}
-                <div className="flex-1 flex flex-col lg:ml-64">
-                    <div className="flex-shrink-0 px-4 py-2 lg:hidden">
+                <div className="flex-1 flex flex-col w-full bg-white dark:bg-gray-800 shadow-lg rounded-lg">
+                    <div className="flex-shrink-0 px-4 md:hidden">
                         <button
                             className="text-gray-800 dark:text-gray-200"
                             onClick={() => setIsSidebarOpen(!isSidebarOpen)}
@@ -147,8 +190,8 @@ export default function Dashboard({ auth, ziggy }: PageProps) {
                             />
                         </button>
                     </div>
-                    <div className="flex-1 overflow-y-auto">
-                        <div className="py-12 max-w-4xl mx-auto p-6 bg-white dark:bg-gray-800 shadow-lg rounded-lg">
+                    <div className="flex-1 flex justify-center items-center">
+                        <div className="max-w-full mx-auto p-4">
                             {renderActiveSection()}
                         </div>
                     </div>

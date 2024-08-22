@@ -36,7 +36,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // User Setting Route
     Route::get('/user/settings', [UserController::class, 'showSettings'])->name('user.settings');
-    Route::put('/user/settings', [UserController::class, 'updateSettings'])->name('user.settings.update');
+    Route::post('/user/settings', [UserController::class, 'updateSettings'])->name('user.settings.update');
 
     // Dashboard Route
     Route::get('/dashboard', function () {

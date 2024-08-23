@@ -12,7 +12,11 @@ class WishlistController extends Controller
 {
     public function index()
     {
-        $wishlists = Wishlist::where('user_id', Auth::id())->with('product')->get();
+        // Fetch wishlist items with related products
+        $wishlists = Wishlist::where('user_id', Auth::id())
+            ->with('product')
+            ->get();
+            
         return back()->with([
             'wishlists' => $wishlists,
         ]);

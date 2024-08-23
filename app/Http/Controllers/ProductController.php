@@ -23,6 +23,9 @@ class ProductController extends Controller
         ]);
     }
 
+    
+    // ADDMIN ONLY
+
     /**
      * Show the form for creating a new resource.
      */
@@ -101,12 +104,12 @@ class ProductController extends Controller
     }
 
 
-
     /**
      * Show the form for editing the specified resource.
      */
     public function edit(Product $product)
     {
+        // Auth::admin();
         return Inertia::render('Products/Edit', [
             'product' => $product,
         ]);

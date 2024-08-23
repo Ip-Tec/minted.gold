@@ -6,9 +6,12 @@ export interface User {
     day?: string;
     email: string;
     year?: string;
+    state?: string;
     month?: string;
     gender?: string;
     avatar?: string;
+    address?: string;
+    country?: string;
     email_verified_at: string;
 
     first_name?: string;

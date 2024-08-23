@@ -94,3 +94,8 @@ export interface SearchProps {
     query: string;
     results: SearchResults;
 }
+export interface WishListProps {
+    user_id: number;
+    products: Product;
+    product_id: number;
+}

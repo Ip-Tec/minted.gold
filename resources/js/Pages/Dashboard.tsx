@@ -13,9 +13,11 @@ import {
     faCreditCard,
     faBoxOpen,
     faHeart,
+    faUserEdit,
 } from "@fortawesome/free-solid-svg-icons";
 import Orders from "@/Components/Orders";
 import Wishlist from "@/Components/Wishlist";
+import Profile from "@/Components/Profile";
 
 export default function Dashboard({ auth, ziggy }: PageProps) {
     const { url, props } = usePage(); // Access page properties including URL
@@ -23,8 +25,16 @@ export default function Dashboard({ auth, ziggy }: PageProps) {
     const sectionQuery = queryParams.get("q");
 
     const [activeSection, setActiveSection] = useState<
-        "account" | "shipping" | "orders" | "payment" | "wishlist"
-    >((sectionQuery as "account" | "shipping" | "orders" | "payment" | "wishlist") || "account");
+        "profile" | "account" | "shipping" | "orders" | "payment" | "wishlist"
+    >(
+        (sectionQuery as
+            | "profile"
+            | "account"
+            | "shipping"
+            | "orders"
+            | "payment"
+            | "wishlist") || "profile"
+    );
 
     const [profilePicture, setProfilePicture] = useState<string>(
         auth.user.avatar || "https://via.placeholder.com/150"
@@ -66,6 +76,8 @@ export default function Dashboard({ auth, ziggy }: PageProps) {
 
     const renderActiveSection = () => {
         switch (activeSection) {
+            case "profile":
+                return <Profile auth={auth} ziggy={ziggy} />;
             case "account":
                 return <AccountDetails auth={auth} ziggy={ziggy} />;
             case "shipping":
@@ -75,7 +87,7 @@ export default function Dashboard({ auth, ziggy }: PageProps) {
             case "orders":
                 return <Orders auth={auth} ziggy={ziggy} />;
             case "wishlist":
-                return <Wishlist auth={auth} ziggy={ziggy} />;
+                return <Wishlist />;
             default:
                 return null;
         }
@@ -115,8 +127,22 @@ export default function Dashboard({ auth, ziggy }: PageProps) {
                             onChange={handleFileChange}
                             accept="image/*"
                         />
-                        <nav className="mt-6 w-full">
-                            <ul className="flex md:flex-col gap-3 flex-nowrap">
+                        <nav className="mt-6 w-full overflow-x-hidden">
+                            <ul className="flex md:flex-col gap-3 flex-nowrap overflow-auto">
+                                <li
+                                    className={`cursor-pointer flex items-center gap-2 py-4 ${
+                                        activeSection === "profile"
+                                            ? "text-blue-500 font-semibold"
+                                            : "text-gray-500 dark:text-gray-400"
+                                    }`}
+                                    onClick={() => setActiveSection("profile")}
+                                >
+                                    <FontAwesomeIcon
+                                        icon={faUserEdit}
+                                        className="me-2"
+                                    />
+                                    Profile
+                                </li>
                                 <li
                                     className={`cursor-pointer flex items-center gap-2 py-4 ${
                                         activeSection === "account"

@@ -80,7 +80,7 @@ export default function Authenticated({
                                             />
                                             Personal Information
                                         </Dropdown.Link>
-                                        <Dropdown.Link href="/dashboard/?q=wish">
+                                        <Dropdown.Link href="/dashboard/?q=wishlist">
                                             <FontAwesomeIcon
                                                 icon={faHeart}
                                                 className="me-2"
@@ -102,7 +102,7 @@ export default function Authenticated({
                                             Product Reviews
                                         </Dropdown.Link>
                                         <Dropdown.Link
-                                            href={route("profile.edit")}
+                                            href={"/dashboard/?q=pofile"}
                                         >
                                             <FontAwesomeIcon
                                                 icon={faUserEdit}
@@ -202,7 +202,7 @@ export default function Authenticated({
                                 />
                                 Personal Information
                             </ResponsiveNavLink>
-                            <ResponsiveNavLink href="/dashboard/?q=wish">
+                            <ResponsiveNavLink href="/dashboard/?q=wishlist">
                                 <FontAwesomeIcon
                                     icon={faHeart}
                                     className="me-2"
@@ -223,7 +223,7 @@ export default function Authenticated({
                                 />
                                 Product Reviews
                             </ResponsiveNavLink>
-                            <ResponsiveNavLink href={route("profile.edit")}>
+                            <ResponsiveNavLink href={"/dashboard/?q=pofile"}> 
                                 <FontAwesomeIcon
                                     icon={faUserEdit}
                                     className="me-2"

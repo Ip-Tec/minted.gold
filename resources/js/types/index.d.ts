@@ -3,11 +3,9 @@ import { Config } from "ziggy-js";
 export interface User {
     id: number;
     name: string;
-    day?: string;
+    DOB?: string;
     email: string;
-    year?: string;
     state?: string;
-    month?: string;
     gender?: string;
     avatar?: string;
     address?: string;

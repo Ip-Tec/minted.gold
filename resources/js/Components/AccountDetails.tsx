@@ -16,9 +16,7 @@ const AccountDetails = ({ auth }: PageProps) => {
         last_name: userState.last_name,
         email: userState.email,
         gender: userState.gender,
-        day: userState.day,
-        month: userState.month,
-        year: userState.year,
+        DOB: userState.DOB, // Corrected to use DOB
         avatar: "",
     });
 
@@ -33,9 +31,7 @@ const AccountDetails = ({ auth }: PageProps) => {
         setData(
             name as
                 | "email"
-                | "month"
-                | "day"
-                | "year"
+                | "DOB"
                 | "gender"
                 | "avatar"
                 | "first_name"
@@ -53,12 +49,10 @@ const AccountDetails = ({ auth }: PageProps) => {
         try {
             post("/user/settings", {
                 data: {
+                    DOB: data.DOB,
                     name: fullName,
                     email: data.email,
                     gender: data.gender,
-                    day: data.day,
-                    month: data.month,
-                    year: data.year,
                     avatar: data.avatar,
                 },
                 preserveScroll: true,
@@ -132,33 +126,13 @@ const AccountDetails = ({ auth }: PageProps) => {
                             Date of Birth *
                         </label>
                         <div className="flex gap-4">
-                            <select
-                                name="day"
-                                value={userState.day}
+                            <input
+                                type="date"
+                                name="DOB"
+                                value={userState.DOB || ""}
                                 onChange={handleInputChange}
-                                className="block w-1/3 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm p-2"
-                            >
-                                <option value="">10</option>
-                                {/* Add more days */}
-                            </select>
-                            <select
-                                name="month"
-                                value={userState.month}
-                                onChange={handleInputChange}
-                                className="block w-1/3 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm p-2"
-                            >
-                                <option value="">June</option>
-                                {/* Add more months */}
-                            </select>
-                            <select
-                                name="year"
-                                value={userState.year}
-                                onChange={handleInputChange}
-                                className="block w-1/3 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm p-2"
-                            >
-                                <option value="">1990</option>
-                                {/* Add more years */}
-                            </select>
+                                className="mt-1 block w-full border border-gray-300 dark:border-gray-700 rounded-md shadow-sm p-2"
+                            />
                         </div>
                     </div>
                     <div className="col-span-2">
@@ -167,7 +141,7 @@ const AccountDetails = ({ auth }: PageProps) => {
                         </label>
                         <select
                             name="gender"
-                            value={userState.gender}
+                            value={userState.gender || ""}
                             onChange={handleInputChange}
                             className="block w-full border border-gray-300 dark:border-gray-700 rounded-md shadow-sm p-2"
                         >

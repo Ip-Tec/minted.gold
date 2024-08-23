@@ -46,7 +46,7 @@ const Profile = ({ auth }: PageProps) => {
                         Date of Birth
                     </label>
                     <p className="mt-1 text-gray-800 dark:text-gray-200">
-                        {`${userState.day}-${userState.month}-${userState.year}`}
+                        {`${userState.DOB}`}
                     </p>
                 </div>
                 <div className="col-span-2">

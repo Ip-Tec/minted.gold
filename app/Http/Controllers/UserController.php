@@ -17,10 +17,9 @@ class UserController extends Controller
         ]);
     }
 
-    public function updateSettings(Request $request)
+    public function updateSettings(Request $request,  Auth $auth)
     {
-        $user = Auth::user();
-
+        $user = $auth::user();
         $request->validate([
             'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // Avatar validation
             'phone_number' => 'nullable|string|max:15',
@@ -49,6 +48,7 @@ class UserController extends Controller
 
         // Update other user information
         $user->update($request->only('phone_number', 'address', 'city', 'state', 'country', 'postal_code'));
+
 
         return back()->with('success', 'Profile updated successfully.');
     }

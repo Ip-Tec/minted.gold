@@ -138,10 +138,13 @@ export default function Dashboard({ auth, ziggy }: PageProps) {
                                     onClick={() => setActiveSection("profile")}
                                 >
                                     <FontAwesomeIcon
+                                        title="Profile"
                                         icon={faUserEdit}
-                                        className="me-2"
+                                        className="text-5xl md:text-base"
                                     />
-                                    Profile
+                                    <span className="hidden md:block">
+                                        Profile
+                                    </span>
                                 </li>
                                 <li
                                     className={`cursor-pointer flex items-center gap-2 py-4 ${
@@ -151,8 +154,14 @@ export default function Dashboard({ auth, ziggy }: PageProps) {
                                     }`}
                                     onClick={() => setActiveSection("account")}
                                 >
-                                    <FontAwesomeIcon icon={faUser} />
-                                    Account Details
+                                    <FontAwesomeIcon
+                                        title="Account Details"
+                                        icon={faUser}
+                                        className="text-5xl md:text-base"
+                                    />
+                                    <span className="hidden md:block">
+                                        Account Details
+                                    </span>
                                 </li>
                                 <li
                                     className={`cursor-pointer flex items-center gap-2 py-4 ${
@@ -162,8 +171,14 @@ export default function Dashboard({ auth, ziggy }: PageProps) {
                                     }`}
                                     onClick={() => setActiveSection("shipping")}
                                 >
-                                    <FontAwesomeIcon icon={faShippingFast} />
-                                    Shipping Address
+                                    <FontAwesomeIcon
+                                        title="Shipping Address"
+                                        icon={faShippingFast}
+                                        className="text-5xl md:text-base"
+                                    />
+                                    <span className="hidden md:block">
+                                        Shipping Address
+                                    </span>
                                 </li>
                                 <li
                                     className={`cursor-pointer flex items-center gap-2 py-4 ${
@@ -173,8 +188,14 @@ export default function Dashboard({ auth, ziggy }: PageProps) {
                                     }`}
                                     onClick={() => setActiveSection("payment")}
                                 >
-                                    <FontAwesomeIcon icon={faCreditCard} />
-                                    Payment Methods
+                                    <FontAwesomeIcon
+                                        title="Payment Methods"
+                                        icon={faCreditCard}
+                                        className="text-5xl md:text-base"
+                                    />
+                                    <span className="hidden md:block">
+                                        Payment Methods
+                                    </span>
                                 </li>
                                 <li
                                     className={`cursor-pointer flex items-center gap-2 py-4 ${
@@ -184,8 +205,14 @@ export default function Dashboard({ auth, ziggy }: PageProps) {
                                     }`}
                                     onClick={() => setActiveSection("orders")}
                                 >
-                                    <FontAwesomeIcon icon={faBoxOpen} />
-                                    Orders
+                                    <FontAwesomeIcon
+                                        title="Orders"
+                                        icon={faBoxOpen}
+                                        className="text-5xl md:text-base"
+                                    />
+                                    <span className="hidden md:block">
+                                        Orders
+                                    </span>
                                 </li>
                                 <li
                                     className={`cursor-pointer flex items-center gap-2 py-4 ${
@@ -195,8 +222,14 @@ export default function Dashboard({ auth, ziggy }: PageProps) {
                                     }`}
                                     onClick={() => setActiveSection("wishlist")}
                                 >
-                                    <FontAwesomeIcon icon={faHeart} />
-                                    My Wishlist
+                                    <FontAwesomeIcon
+                                        title="My Wishlist"
+                                        icon={faHeart}
+                                        className="text-5xl md:text-base"
+                                    />
+                                    <span className="hidden md:block">
+                                        My Wishlist
+                                    </span>
                                 </li>
                             </ul>
                         </nav>

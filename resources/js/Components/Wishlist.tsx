@@ -9,7 +9,7 @@ function Wishlist() {
 
     useEffect(() => {
         // Fetch wishlist items when the component mounts
-        get("dashbord/wishlists", {
+        get(route("wishlist.index"), {
             preserveScroll: true,
             only: ["wishlists"],
             onSuccess: (page) => {

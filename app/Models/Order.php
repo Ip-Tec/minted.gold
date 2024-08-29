@@ -18,13 +18,18 @@ class Order extends Model
         'delivered_at',
     ];
 
+    public const STATUS_ONGOING = 'Ongoing';
+    public const STATUS_SUCCESSFUL = 'Successfully';
+    public const STATUS_CANCELED = 'Canceled';
+    public const STATUS_RETURNED = 'Returned';
+
     public function user()
     {
         return $this->belongsTo(User::class);
     }
 
-    public function product()
+    public function items()
     {
-        return $this->belongsTo(Product::class);
+        return $this->hasMany(OrderItem::class);
     }
 }

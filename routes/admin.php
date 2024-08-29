@@ -8,7 +8,7 @@ use Inertia\Inertia;
 
 Route::prefix('admin-state')->group(function () {
     Route::get('/', function () {
-        return Inertia::render('Welcom', [
+        return Inertia::render('Admin/Welcome', [
             'canLogin' => Route::has('login'),
             'canRegister' => Route::has('register'),
             'laravelVersion' => Application::VERSION,
@@ -18,30 +18,31 @@ Route::prefix('admin-state')->group(function () {
 
     Route::get('/dashboard', function () {
         return Inertia::render('Dashboard');
-    })->middleware(['auth', 'verified'])->name('dashboard');
+    })->middleware(['auth', 'verified'])->name('admin.dashboard');
 
     Route::middleware('auth')->group(function () {
         Route::get('/profile', [ProfileController::class, 'edit'])
-            ->name('profile.edit');
+            ->name('admin.profile.edit');
 
         Route::patch('/profile', [ProfileController::class, 'update'])
-            ->name('profile.update');
+            ->name('admin.profile.update');
 
         Route::delete('/profile', [ProfileController::class, 'destroy'])
-            ->name('profile.destroy');
+            ->name('admin.profile.destroy');
     });
 
     Route::get('/categories', [CategoryController::class, 'index'])
-        ->name('categories.index');
+        ->name('admin.categories.index');
 
     Route::middleware(['admin'])->group(function () {
         Route::get(
             '/categories/create',
             [CategoryController::class, 'create']
-        )->name('categories.create');
+        )->name('admin.categories.create');
 
         Route::post('/categories', [CategoryController::class, 'store'])
-            ->name('categories.store');
+            ->name('admin.categories.store');
     });
+    
 });
 require __DIR__ . '/auth.php';

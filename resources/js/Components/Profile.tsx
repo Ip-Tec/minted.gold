@@ -12,25 +12,17 @@ const Profile = ({ auth }: PageProps) => {
     };
 
     return (
-        <div className="w-auto mx-auto p-6">
+        <div className="gap-4 w-screen md:max-w-md mx-auto p-6">
             <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-4">
                 Profile Details
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                     <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                        First Name
+                        Name
                     </label>
                     <p className="mt-1 text-gray-800 dark:text-gray-200">
-                        {userState.first_name}
-                    </p>
-                </div>
-                <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                        Last Name
-                    </label>
-                    <p className="mt-1 text-gray-800 dark:text-gray-200">
-                        {userState.last_name}
+                        {auth.user.name}
                     </p>
                 </div>
                 <div className="col-span-2">
@@ -41,7 +33,7 @@ const Profile = ({ auth }: PageProps) => {
                         {userState.email}
                     </p>
                 </div>
-                <div className="col-span-2">
+                <div className="col-span-1">
                     <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                         Date of Birth
                     </label>
@@ -49,7 +41,7 @@ const Profile = ({ auth }: PageProps) => {
                         {`${userState.DOB}`}
                     </p>
                 </div>
-                <div className="col-span-2">
+                <div className="col-span-1">
                     <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                         Gender
                     </label>
@@ -65,7 +57,7 @@ const Profile = ({ auth }: PageProps) => {
                         {userState.address}
                     </p>
                 </div>
-                <div className="col-span-2">
+                <div className="col-span-1">
                     <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                         Country
                     </label>
@@ -73,7 +65,7 @@ const Profile = ({ auth }: PageProps) => {
                         {userState.country}
                     </p>
                 </div>
-                <div className="col-span-2">
+                <div className="col-span-1">
                     <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                         State
                     </label>
@@ -83,6 +75,9 @@ const Profile = ({ auth }: PageProps) => {
                 </div>
             </div>
             <Link
+                preserveState
+                preserveScroll
+                only={['account']}
                 href="/dashboard/?q=account"
                 className="mt-6 inline-block bg-blue-500 hover:bg-blue-600 text-white font-semibold py-3 px-6 rounded-md"
             >

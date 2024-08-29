@@ -7,17 +7,19 @@ function Wishlist() {
     const { props } = usePage<{ auth: { user: any } }>();
     const [wishlistItems, setWishlistItems] = useState<WishListProps[]>([]);
 
+    // Fetch wishlist items when the component mounts
     useEffect(() => {
-        // Fetch wishlist items when the component mounts
-        get(route("wishlist.index"), {
+        get("/wishlist", {
             preserveScroll: true,
             only: ["wishlists"],
             onSuccess: (page) => {
+                console.log({ page });
+
                 const wishlists = page.props.wishlists as WishListProps[];
                 setWishlistItems(wishlists);
             },
         });
-    }, []);
+    }, []); // Empty dependency array ensures this runs only once on mount
 
     // Function to remove an item from the wishlist
     const removeFromWishlist = (itemId: number) => {

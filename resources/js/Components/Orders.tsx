@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { PageProps } from "@/types";
-import { Head } from "@inertiajs/react";
+import { Head, Link } from "@inertiajs/react";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 
 interface OrdersProps {
@@ -123,6 +123,16 @@ export default function Orders({ auth }: PageProps) {
                                                         order.created_at
                                                     ).toLocaleDateString()}
                                                 </p>
+                                                <Link
+                                                    href="/review"
+                                                    preserveState
+                                                    preserveScroll
+                                                    method="get"
+                                                    as="button"
+                                                    className="my-2 px-8 py-2 rounded-md bg-orange-600 text-slate-200"
+                                                >
+                                                    Review
+                                                </Link>
                                             </div>
                                         </div>
                                     ))

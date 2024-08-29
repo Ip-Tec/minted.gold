@@ -1,26 +1,25 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { PageProps } from "@/types";
-import { Head, usePage } from "@inertiajs/react";
+import { Head, usePage, useForm } from "@inertiajs/react";
 import AccountDetails from "@/Components/AccountDetails";
 import ShippingAddress from "@/Components/ShippingAddress";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-    faBars,
-    faTimes,
     faUser,
     faShippingFast,
     faCreditCard,
     faBoxOpen,
     faHeart,
     faUserEdit,
+    faEdit,
 } from "@fortawesome/free-solid-svg-icons";
 import Orders from "@/Components/Orders";
 import Wishlist from "@/Components/Wishlist";
 import Profile from "@/Components/Profile";
 
 export default function Dashboard({ auth, ziggy }: PageProps) {
-    const { url, props } = usePage(); // Access page properties including URL
+    const { url } = usePage(); // Access page properties including URL
     const queryParams = new URLSearchParams(url.split("?")[1]);
     const sectionQuery = queryParams.get("q");
 
@@ -37,12 +36,17 @@ export default function Dashboard({ auth, ziggy }: PageProps) {
     );
 
     const [profilePicture, setProfilePicture] = useState<string>(
-        auth.user.avatar || "https://via.placeholder.com/150"
+        auth.user.avatar
+            ? `/storage/${auth.user.avatar}`
+            : "https://via.placeholder.com/150"
     );
 
-    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+    const { post, setData } = useForm({
+        avatar: null,
+    });
 
-    let fileInputRef: HTMLInputElement | null = null;
+    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+    const fileInputRef = useRef<HTMLInputElement | null>(null);
 
     useEffect(() => {
         if (sectionQuery) {
@@ -58,8 +62,8 @@ export default function Dashboard({ auth, ziggy }: PageProps) {
     }, [sectionQuery]);
 
     const handleProfilePictureChange = () => {
-        if (fileInputRef) {
-            fileInputRef.click();
+        if (fileInputRef.current) {
+            fileInputRef.current.click();
         }
     };
 
@@ -71,9 +75,32 @@ export default function Dashboard({ auth, ziggy }: PageProps) {
                 setProfilePicture(reader.result as string);
             };
             reader.readAsDataURL(file);
+
+            setData("avatar", file); // Set the file in the form data
+            handleSubmit();
         }
     };
 
+    const handleSubmit = () => {
+        post(route("user.settings.update"), {
+            forceFormData: true,
+            only: ["data", "success", "error"],
+            onSuccess: (page) => {
+                if (
+                    page.props.data &&
+                    typeof page.props.data === "object" &&
+                    "avatar" in page.props.data
+                ) {
+                    console.log({ page });
+                    setProfilePicture(`/storage/${page.props.data.avatar}?${new Date().getTime()}`);
+                    // setProfilePicture(page.props.data.avatar as string);
+                }
+            },
+            onError: (error) => {
+                console.error(error);
+            },
+        });
+    };
     const renderActiveSection = () => {
         switch (activeSection) {
             case "profile":
@@ -114,15 +141,18 @@ export default function Dashboard({ auth, ziggy }: PageProps) {
                                 alt={auth.user.name}
                                 className="w-32 h-32 rounded-full object-cover"
                             />
-                            <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 rounded-full">
+                            <div className="absolute flex items-center justify-center bg-black bg-opacity-50 rounded-full h-8 w-8 bottom-0 right-0.5">
                                 <span className="text-white text-sm text-center">
-                                    Click to change photo
+                                    <FontAwesomeIcon
+                                        icon={faEdit}
+                                        className="text-white text-sm text-center"
+                                    />
                                 </span>
                             </div>
                         </div>
                         <input
                             type="file"
-                            ref={(ref) => (fileInputRef = ref)}
+                            ref={fileInputRef}
                             style={{ display: "none" }}
                             onChange={handleFileChange}
                             accept="image/*"
@@ -236,25 +266,8 @@ export default function Dashboard({ auth, ziggy }: PageProps) {
                     </div>
                 </div>
 
-                {/* Main Content */}
-                <div className="flex-1 flex flex-col w-full bg-white dark:bg-gray-800 shadow-lg rounded-lg">
-                    <div className="flex-shrink-0 px-4 md:hidden">
-                        <button
-                            className="text-gray-800 dark:text-gray-200"
-                            onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-                        >
-                            <FontAwesomeIcon
-                                icon={isSidebarOpen ? faTimes : faBars}
-                                size="2x"
-                            />
-                        </button>
-                    </div>
-                    <div className="flex-1 flex justify-center items-center">
-                        <div className="max-w-full mx-auto p-4">
-                            {renderActiveSection()}
-                        </div>
-                    </div>
-                </div>
+                {/* Main content */}
+                <div className="flex-1 p-4 md:p-6">{renderActiveSection()}</div>
             </div>
         </AuthenticatedLayout>
     );

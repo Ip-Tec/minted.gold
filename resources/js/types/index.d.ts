@@ -14,6 +14,8 @@ export interface User {
 
     first_name?: string;
     last_name?: string;
+    isActive?: boolean;
+    isDeleted?: boolean;
 }
 
 export type PageProps<

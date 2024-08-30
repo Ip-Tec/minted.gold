@@ -79,7 +79,7 @@ const ProductComponent = () => {
                         placeholder="Search products..."
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
-                        className="w-full p-2 pl-10 border rounded"
+                        className="w-full p-2 pl-10 border rounded text-gray-700"
                     />
                     <FontAwesomeIcon
                         icon={faSearch}
@@ -127,11 +127,11 @@ const ProductComponent = () => {
             {/* Add Product Sidebar */}
             {isSidebarOpen && (
                 <div
-                    className="fixed inset-0 bg-black bg-opacity-70 z-10 flex justify-start"
+                    className="fixed inset-0 bg-black bg-opacity-70 z-10 flex justify-end"
                     onClick={closeSidebar}
                 >
                     <div
-                        className="bg-gray-800 w-1/3 p-6 text-white"
+                        className="bg-gray-800 w-[45%] p-6 text-white"
                         onClick={(e) => e.stopPropagation()}
                     >
                         <h3 className="text-xl font-bold mb-4">Add Product</h3>
@@ -217,7 +217,7 @@ const ProductComponent = () => {
             {/* Add Product Button */}
             <button
                 onClick={() => setIsSidebarOpen(true)}
-                className="fixed bottom-4 right-4 bg-blue-500 p-4 rounded-full text-white shadow-lg hover:bg-blue-600"
+                className="fixed bottom-4 right-4 bg-blue-500 py-4 px-5 rounded-full text-white shadow-lg hover:bg-blue-600"
             >
                 <FontAwesomeIcon icon={faPlus} />
             </button>

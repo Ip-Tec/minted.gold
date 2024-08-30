@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
     faTachometerAlt,
@@ -12,7 +12,7 @@ import {
     faChevronDown,
     faChevronUp,
 } from "@fortawesome/free-solid-svg-icons";
-import { Link } from "@inertiajs/react";
+import { Link, usePage } from "@inertiajs/react";
 import { User } from "@/types/index";
 
 export default function SideNav({
@@ -25,6 +25,7 @@ export default function SideNav({
     setActiveSection: (section: string) => void;
 }) {
     const [siteSettingsOpen, setSiteSettingsOpen] = useState(false);
+    const { url } = usePage();
 
     const navItems = [
         { name: "Dashboard", icon: faTachometerAlt, path: "dashboard" },
@@ -36,9 +37,27 @@ export default function SideNav({
         { name: "Setting", icon: faCog, path: "settings" },
     ];
 
+    // Use useEffect to update activeSection when URL changes
+    useEffect(() => {
+        const currentPath = url.split("/").pop();
+        const activeNavItem = navItems.find(
+            (item) => item.path === currentPath
+        );
+
+        if (activeNavItem) {
+            setActiveSection(activeNavItem.name);
+        } else if (currentPath === "cart-settings") {
+            setActiveSection("Cart");
+            setSiteSettingsOpen(true);
+        } else if (currentPath === "review-settings") {
+            setActiveSection("Review");
+            setSiteSettingsOpen(true);
+        }
+    }, [url, navItems, setActiveSection]);
+
     return (
         <div className="bg-gray-800 w-64 flex-shrink-0 fixed h-screen">
-            <div className="p-4 flex items-center justify-center border-b border-gray-700">
+            <div className="p-4 flex items-center justify-center border-b border-gray-700 overflow-x-hidden relative">
                 <img
                     src={
                         `/storage/${auth.avatar}` || "/image/default-avatar.png"
@@ -51,13 +70,13 @@ export default function SideNav({
                     <p className="text-sm">Admin</p>
                 </div>
             </div>
-            <nav className="mt-4">
-                <ul className="space-y-2">
+            <nav className="mt-4 h-[calc(100vh-10rem)] overflow-y-scroll scroll-m-0 scroll-smooth scrollbar-hide">
+                <ul className="space-y-2 relative overflow-x-hidden">
                     {navItems.map((item) => (
                         <li key={item.name}>
                             <Link
                                 href={`/admin-state/${item.path}`}
-                                className={`flex items-center p-3 hover:bg-gray-700 ${
+                                className={`flex items-center px-3 py-[0.375rem] hover:bg-gray-700 ${
                                     activeSection === item.name
                                         ? "bg-gray-700"
                                         : ""
@@ -133,12 +152,12 @@ export default function SideNav({
                         )}
                     </li>
                     {/* Logout */}
-                    <li>
+                    <li className="fixed bottom-0 w-64 bg-orange-700 hover:bg-gray-700 hover:text-orange-500 border-orange-700 border-t-2 text-white">
                         <button
                             onClick={() => {
                                 // Handle logout functionality here
                             }}
-                            className="flex items-center p-3 hover:bg-gray-700 w-full text-left"
+                            className="flex items-center p-3 w-full text-left"
                         >
                             <FontAwesomeIcon
                                 icon={faSignOutAlt}

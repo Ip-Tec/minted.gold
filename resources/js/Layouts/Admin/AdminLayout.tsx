@@ -1,72 +1,43 @@
 import { useState } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-    faTachometerAlt,
-    faBoxOpen,
-    faUsers,
-    faCubes,
-    faTags,
-    faComments,
-    faCog,
-    faSignOutAlt,
-    faTools,
-} from "@fortawesome/free-solid-svg-icons";
-import { Link } from "@inertiajs/react";
+import { User } from "@/types/index";
+import SideNav from "@/Components/Admin/SideNav";
 
-const AdminLayout = ({ children }: { children: React.ReactNode }) => {
-    const [activeMenu, setActiveMenu] = useState("Dashboard");
-
-    const menuItems = [
-        { name: "Dashboard", icon: faTachometerAlt, path: "dashboard" },
-        { name: "Orders", icon: faBoxOpen, path: "orders" },
-        { name: "Users", icon: faUsers, path: "users" },
-        { name: "Product", icon: faCubes, path: "product" },
-        { name: "Categories", icon: faTags, path: "categories" },
-        { name: "Reviews", icon: faComments, path: "reviews" },
-        { name: "Site Setting", icon: faTools, path: "site-setting" },
-        { name: "Setting", icon: faCog, path: "setting" },
-        { name: "Logout", icon: faSignOutAlt, path: "logout" },
-    ];
+export default function AdminLayout({
+    children,
+    auth,
+}: {
+    children: React.ReactNode;
+    auth: User;
+}) {
+    const [activeSection, setActiveSection] = useState("Dashboard");
 
     return (
-        <div className="flex min-h-screen bg-gray-100 dark:bg-gray-900">
-            {/* Sidebar */}
-            <aside className="w-64 bg-white dark:bg-gray-800 shadow-lg">
-                <div className="p-4 text-center text-lg font-bold dark:text-white">
-                    Admin Panel
-                </div>
-                <nav className="mt-4">
-                    <ul>
-                        {menuItems.map((item) => (
-                            <li
-                                key={item.name}
-                                className={`p-4 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700 cursor-pointer ${
-                                    activeMenu === item.name
-                                        ? "bg-gray-200 dark:bg-gray-700"
-                                        : ""
-                                }`}
-                                onClick={() => setActiveMenu(item.name)}
-                            >
-                                <Link
-                                    href={`/admin/${item.path}`}
-                                    className="flex items-center"
-                                >
-                                    <FontAwesomeIcon
-                                        icon={item.icon}
-                                        className="mr-3"
-                                    />
-                                    {item.name}
-                                </Link>
-                            </li>
-                        ))}
-                    </ul>
-                </nav>
-            </aside>
+        <div className="flex min-h-screen h-auto bg-gray-900 text-white">
+            <SideNav
+                auth={auth}
+                activeSection={activeSection}
+                setActiveSection={setActiveSection}
+            />
 
             {/* Main Content */}
-            <main className="flex-1 p-6">{children}</main>
+            <div className="flex-1 ml-64">
+                {/* Top Nav */}
+                <div className="bg-gray-800 shadow fixed w-full top-0 z-10">
+                    <div className="container mx-auto px-4 py-4 flex justify-between items-center">
+                        {/* <h1 className="text-xl font-bold text-white">
+                            Admin Panel
+                        </h1> */}
+                        <div>
+                            <p className="text-gray-400">
+                                Welcome, {auth.name}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Page Content */}
+                <div className="pt-20 px-4 h-auto">{children}</div>
+            </div>
         </div>
     );
-};
-
-export default AdminLayout;
+}

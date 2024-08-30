@@ -3,9 +3,9 @@ import { PageProps } from "@/types";
 import Authenticated from "@/Layouts/AuthenticatedLayout";
 import AdminLayout from "@/Layouts/Admin/AdminLayout";
 import { User } from "@/types/index";
-import Dashboard from "@/Components/Admin/Dashboard";
+import Orders from "@/Components/Admin/Orders";
 
-export default function Welcome({
+export default function Order({
     auth,
     laravelVersion,
     phpVersion,
@@ -28,8 +28,8 @@ export default function Welcome({
     return (
         <>
             <AdminLayout auth={auth.user}>
-                <Head title="Dashboard" />
-                <Dashboard />
+                <Head title="Order" />
+                <Orders />
             </AdminLayout>
         </>
     );

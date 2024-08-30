@@ -9,15 +9,31 @@ use Inertia\Inertia;
 Route::prefix('admin-state')->group(function () {
     Route::get('/', function () {
         return Inertia::render('Admin/Welcome', [
-            'canLogin' => Route::has('login'),
-            'canRegister' => Route::has('register'),
-            'laravelVersion' => Application::VERSION,
-            'phpVersion' => PHP_VERSION,
+            'canLogin' => Route::has('admin.login'),
+            'canRegister' => Route::has('admin.register'),
+        ]);
+    });
+    Route::get('/orders', function () {
+        return Inertia::render('Admin/Order', [
+            'canLogin' => Route::has('admin.login'),
+            'canRegister' => Route::has('admin.register'),
+        ]);
+    });
+    Route::get('/product', function () {
+        return Inertia::render('Admin/Product', [
+            'canLogin' => Route::has('admin.login'),
+            'canRegister' => Route::has('admin.register'),
         ]);
     });
 
+    //     Route::middleware(['auth', 'admin'])->group(function () {
+    //     Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
+    //     Route::get('/admin/orders', [AdminController::class, 'orders'])->name('admin.orders');
+    //     // Add other routes here...
+    // });
+
     Route::get('/dashboard', function () {
-        return Inertia::render('Dashboard');
+        return Inertia::render('Admin/Welcome');
     })->middleware(['auth', 'verified'])->name('admin.dashboard');
 
     Route::middleware('auth')->group(function () {
@@ -43,6 +59,5 @@ Route::prefix('admin-state')->group(function () {
         Route::post('/categories', [CategoryController::class, 'store'])
             ->name('admin.categories.store');
     });
-    
 });
 require __DIR__ . '/auth.php';

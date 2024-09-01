@@ -76,11 +76,10 @@ export default function Dashboard({ auth, ziggy }: PageProps) {
             };
             reader.readAsDataURL(file);
 
-            setData("avatar", file); // Set the file in the form data
+            setData("avatar", file as any); // Set the file in the form data
             handleSubmit();
         }
     };
-
     const handleSubmit = () => {
         post(route("user.settings.update"), {
             forceFormData: true,

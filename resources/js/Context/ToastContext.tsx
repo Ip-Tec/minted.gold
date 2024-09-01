@@ -7,7 +7,7 @@ import React, {
     ReactNode,
     useCallback,
 } from "react";
-import Toast from "@/Components/Toast";
+import Toast from "@/Components/User/Toast";
 
 interface ToastContextType {
     addToast: (message: string) => void;

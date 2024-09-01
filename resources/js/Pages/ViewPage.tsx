@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
-import ProductGallery from "@/Components/ProductGallery";
-import ProductDetails from "@/Components/ProductDetails";
-import RelatedProducts from "@/Components/RelatedProducts";
-import Header from "@/Components/Header";
+import ProductGallery from "@/Components/User/ProductGallery";
+import ProductDetails from "@/Components/User/ProductDetails";
+import RelatedProducts from "@/Components/User/RelatedProducts";
+import Header from "@/Components/User/Header";
 import { ToastProvider } from "@/Context/ToastContext";
 import { CartProvider } from "@/Context/CartContext";
 

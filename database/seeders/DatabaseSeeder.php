@@ -27,7 +27,8 @@ class DatabaseSeeder extends Seeder
             // UserSeeder::class,
             NewsletterSeeder::class,
             WishlistSeeder::class,
-            OrderSeeder::class
+            OrderSeeder::class,
+            ReviewSeeder::class,
         ]);
     }
 }

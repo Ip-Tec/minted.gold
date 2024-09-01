@@ -1,11 +1,11 @@
 // Header.tsx
 import { CartItem } from "@/types/types";
-import SideNav from "@/Components/SideNav";
+import SideNav from "@/Components/User/SideNav";
 import { usePage } from "@inertiajs/react";
 import { useCart } from "@/Context/CartContext";
-import SearchForm from "@/Components/SearchForm";
+import SearchForm from "@/Components/User/SearchForm";
 import { FaShoppingCart, FaSearch } from "react-icons/fa";
-import ApplicationLogo from "@/Components/ApplicationLogo";
+import ApplicationLogo from "@/Components/User/ApplicationLogo";
 import React, { useState, useEffect, Suspense } from "react";
 
 const appName = import.meta.env.VITE_APP_NAME || "Minted Golds";

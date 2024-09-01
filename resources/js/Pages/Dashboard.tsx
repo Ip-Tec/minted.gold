@@ -1,8 +1,8 @@
 import { useState, useEffect, useRef } from "react";
 import { PageProps } from "@/types";
 import { Head, usePage, useForm } from "@inertiajs/react";
-import AccountDetails from "@/Components/AccountDetails";
-import ShippingAddress from "@/Components/ShippingAddress";
+import AccountDetails from "@/Components/User/AccountDetails";
+import ShippingAddress from "@/Components/User/ShippingAddress";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -14,9 +14,9 @@ import {
     faUserEdit,
     faEdit,
 } from "@fortawesome/free-solid-svg-icons";
-import Orders from "@/Components/Orders";
-import Wishlist from "@/Components/Wishlist";
-import Profile from "@/Components/Profile";
+import Orders from "@/Components/User/Orders";
+import Wishlist from "@/Components/User/Wishlist";
+import Profile from "@/Components/User/Profile";
 
 export default function Dashboard({ auth, ziggy }: PageProps) {
     const { url } = usePage(); // Access page properties including URL

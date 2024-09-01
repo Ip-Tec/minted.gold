@@ -5,31 +5,19 @@ import AdminLayout from "@/Layouts/Admin/AdminLayout";
 import { User } from "@/types/index";
 import Users from "@/Components/Admin/Users";
 
-export default function Order({
+export default function UserPage({
     auth,
-    laravelVersion,
-    phpVersion,
-}: PageProps<{
-    laravelVersion: string;
-    phpVersion: string;
-    auth: { user: User };
-}>) {
-    const handleImageError = () => {
-        document
-            .getElementById("screenshot-container")
-            ?.classList.add("!hidden");
-        document.getElementById("docs-card")?.classList.add("!row-span-1");
-        document
-            .getElementById("docs-card-content")
-            ?.classList.add("!flex-row");
-        document.getElementById("background")?.classList.add("!hidden");
-    };
-
+}: PageProps<{ auth: { user: User } }>) {
     return (
         <>
             <AdminLayout auth={auth.user}>
-                <Head title="Order" />
-                <Users />
+                <Head title="Admin User Management" />
+                <Users
+                    users={[]}
+                    onUpdateUser={function (updatedUser: User): void {
+                        throw new Error("Function not implemented.");
+                    }}
+                />
             </AdminLayout>
         </>
     );

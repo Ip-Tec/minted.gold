@@ -1,7 +1,7 @@
 import React from "react";
 import { ProductListProps } from "@/types/types";
-import CategoryList from "@/Components/CategoryList";
-import MainProductList from "@/Components/MainProductList";
+import CategoryList from "@/Components/User/CategoryList";
+import MainProductList from "@/Components/User/MainProductList";
 
 const ProductList: React.FC<ProductListProps> = ({ products, categories }) => {
     return (

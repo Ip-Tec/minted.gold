@@ -28,7 +28,7 @@ export default function Order({
     return (
         <>
             <AdminLayout auth={auth.user}>
-                <Head title="Order" />
+                <Head title="Order Management" />
                 <Orders />
             </AdminLayout>
         </>

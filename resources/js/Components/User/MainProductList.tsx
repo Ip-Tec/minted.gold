@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHeart } from "@fortawesome/free-solid-svg-icons";
 import { Link, usePage, useForm } from "@inertiajs/react";
-import ProductRating from "@/Components/ProductRating";
+import ProductRating from "@/Components/User/ProductRating";
 import { MainProductListProps } from "@/types/types";
 import AddToCartButton from "./AddToCartButton";
 import { useToast } from "@/Context/ToastContext";

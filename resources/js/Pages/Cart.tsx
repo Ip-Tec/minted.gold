@@ -1,11 +1,11 @@
 import React from "react";
-import Footer from "@/Components/Footer";
-import Header from "@/Components/Header";
+import Footer from "@/Components/User/Footer";
+import Header from "@/Components/User/Header";
 import { HomeProps } from "@/types/types";
-import Newsletter from "@/Components/Newsletter";
-import HeroSection from "@/Components/HeroSection";
-import ProductList from "@/Components/ProductList";
-import WhyBuyFromUs from "@/Components/WhyBuyFromUs";
+import Newsletter from "@/Components/User/Newsletter";
+import HeroSection from "@/Components/User/HeroSection";
+import ProductList from "@/Components/User/ProductList";
+import WhyBuyFromUs from "@/Components/User/WhyBuyFromUs";
 import { CartProvider } from "@/Context/CartContext";
 import { ToastProvider } from "@/Context/ToastContext";
 

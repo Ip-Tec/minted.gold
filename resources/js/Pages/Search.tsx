@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useForm } from "@inertiajs/react";
-import MainProductList from "@/Components/MainProductList";
+import MainProductList from "@/Components/User/MainProductList";
 import { MainProductListProps } from "@/types/types";
 
 const SearchPage: React.FC<MainProductListProps> = ({ products }) => {

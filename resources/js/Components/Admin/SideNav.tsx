@@ -7,6 +7,7 @@ import {
     faCubes,
     faTags,
     faStar,
+    faHome,
     faCog,
     faSignOutAlt,
     faChevronDown,
@@ -32,9 +33,9 @@ export default function SideNav({
         { name: "Orders", icon: faBoxOpen, path: "orders" },
         { name: "Users", icon: faUsers, path: "users" },
         { name: "Product", icon: faCubes, path: "product" },
-        { name: "Categories", icon: faTags, path: "categories" },
-        { name: "Reviews", icon: faStar, path: "reviews" },
-        { name: "Setting", icon: faCog, path: "settings" },
+        { name: "Categories", icon: faTags, path: "_categories" },
+        { name: "Reviews", icon: faStar, path: "_reviews" },
+        { name: "Setting", icon: faCog, path: "_settings" },
     ];
 
     // Use useEffect to update activeSection when URL changes
@@ -114,8 +115,25 @@ export default function SideNav({
                             <ul className="ml-4 mt-2 space-y-2">
                                 <li>
                                     <Link
-                                        href="/admin-state/cart-settings"
-                                        className={`flex items-center p-3 hover:bg-gray-700 ${
+                                        href="/admin-state/site-settings-home"
+                                        className={`flex items-center p-2 hover:bg-gray-700 ${
+                                            activeSection === "Cart"
+                                                ? "bg-gray-700"
+                                                : ""
+                                        }`}
+                                        onClick={() => setActiveSection("Cart")}
+                                    >
+                                        <FontAwesomeIcon
+                                            icon={faHome}
+                                            className="mr-3"
+                                        />
+                                        Home
+                                    </Link>
+                                </li>
+                                <li>
+                                    <Link
+                                        href="/admin-state/site-settings-cart"
+                                        className={`flex items-center p-2 hover:bg-gray-700 ${
                                             activeSection === "Cart"
                                                 ? "bg-gray-700"
                                                 : ""
@@ -124,15 +142,15 @@ export default function SideNav({
                                     >
                                         <FontAwesomeIcon
                                             icon={faCubes}
-                                            className="mr-3"
+                                            className="mr-2"
                                         />
                                         Cart
                                     </Link>
                                 </li>
                                 <li>
                                     <Link
-                                        href="/admin-state/review-settings"
-                                        className={`flex items-center p-3 hover:bg-gray-700 ${
+                                        href="/admin-state/site-settings-review"
+                                        className={`flex items-center p-2 hover:bg-gray-700 ${
                                             activeSection === "Review"
                                                 ? "bg-gray-700"
                                                 : ""

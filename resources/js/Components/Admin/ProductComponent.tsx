@@ -8,7 +8,7 @@ import {
     faTimes,
 } from "@fortawesome/free-solid-svg-icons";
 import { Product } from "@/types/types";
-import ProductForm from "./ProductForm";
+import ProductForm from "@/Components/Admin/Form/ProductForm";
 
 const ProductComponent = () => {
     const [products, setProducts] = useState<Product[]>([

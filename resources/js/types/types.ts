@@ -17,6 +17,9 @@ export interface Category {
     id: number;
     name: string;
     image: string;
+    isDeleted?: boolean;
+    createdAt?: boolean;
+    updatedAt?: boolean;
 }
 
 export interface CartItem {
@@ -98,4 +101,16 @@ export interface WishListProps {
     user_id: number;
     products: Product;
     product_id: number;
+}
+
+export interface Review {
+    product?: Product;
+    id: number;
+    user_id: number;
+    product_id: number;
+    rating: number;
+    comment: string;
+    isDeleted?: boolean;
+    created_at?: string;
+    updated_at?: string;
 }

@@ -38,9 +38,11 @@ export default function SideNav({
         { name: "Setting", icon: faCog, path: "_settings" },
     ];
 
-    // Use useEffect to update activeSection when URL changes
     useEffect(() => {
-        const currentPath = url.split("/").pop();
+        // Get the current URL path, ignoring any query strings
+        const [path] = url.split("?"); // This splits at '?' and uses only the first part
+
+        const currentPath = path.split("/").pop();
         const activeNavItem = navItems.find(
             (item) => item.path === currentPath
         );

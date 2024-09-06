@@ -5,7 +5,7 @@ import AdminLayout from "@/Layouts/Admin/AdminLayout";
 import { User } from "@/types/index";
 import ProductComponent from "@/Components/Admin/ProductComponent";
 
-export default function Order({
+export default function ProductPage({
     auth,
     laravelVersion,
     phpVersion,

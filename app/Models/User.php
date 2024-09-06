@@ -29,6 +29,7 @@ class User extends Authenticatable
         "year",
         'state',
         'country',
+        'isAdmin',
         'postal_code',
     ];
 

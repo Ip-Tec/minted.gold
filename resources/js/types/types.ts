@@ -1,5 +1,5 @@
 // src/types/types.ts
-
+import { User } from "@/types/index";
 export interface Product {
     id: number;
     slug: string;
@@ -113,4 +113,35 @@ export interface Review {
     isDeleted?: boolean;
     created_at?: string;
     updated_at?: string;
+}
+
+export interface DashboardProps {
+    totalUsers: number;
+    totalProducts: number;
+    totalOrders: number;
+    productData: {
+        [key: string]: number;
+    };
+    orderData: {
+        [key: string]: number;
+    };
+    reviewData: {
+        positive: number;
+        negative: number;
+        neutral: number;
+    };
+}
+
+export interface OrderProp {
+    id: number;
+    user_id: number;
+    product_id: number;
+    status: string;
+    total_price: number;
+    paid_at: string | null;
+    delivered_at: string | null;
+    created_at: string;
+    updated_at: string;
+    product: Product;
+    user: User;
 }

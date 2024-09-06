@@ -2,42 +2,32 @@
 
 use App\Http\Controllers\Admin\AdminCategoryController;
 use App\Http\Controllers\Admin\AdminReviewController;
+use App\Http\Controllers\Admin\OrderController;
+use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Admin\Dashboard;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
 Route::prefix('admin-state')->group(function () {
-    Route::get('/', function () {
-        return Inertia::render('Admin/Welcome', [
-            'canLogin' => Route::has('admin.login'),
-            'canRegister' => Route::has('admin.register'),
-        ]);
-    });
-    Route::get('/orders', function () {
-        return Inertia::render('Admin/Order', [
-            'canLogin' => Route::has('admin.login'),
-            'canRegister' => Route::has('admin.register'),
-        ]);
-    });
+    Route::get('/', [Dashboard::class, 'index'])->middleware(['auth', 'verified'])->name('admin.dashboard');
+
+    Route::get('/orders', [OrderController::class, 'index'])->name('admin.orders');
+
     Route::get('/product', function () {
         return Inertia::render('Admin/Product', [
             'canLogin' => Route::has('admin.login'),
             'canRegister' => Route::has('admin.register'),
         ]);
     });
-    Route::get('/users', function () {
-        return Inertia::render('Admin/User', [
-            'canLogin' => Route::has('admin.login'),
-            'canRegister' => Route::has('admin.register'),
-        ]);
-    });
+    Route::get('/users', [UserController::class, 'index'])->name('admin.users');
 
     Route::get('/_categories', [AdminCategoryController::class, "index"])->name('admin.categories.index');
     Route::get('/_categories', [AdminCategoryController::class, "index"])->name('admin.categories.index');
 
-    Route::get('/_reviews',[AdminReviewController::class, "index"]);
+    Route::get('/_reviews', [AdminReviewController::class, "index"]);
     Route::apiResource('reviews', AdminReviewController::class);
 
     //     Route::middleware(['auth', 'admin'])->group(function () {
@@ -46,9 +36,7 @@ Route::prefix('admin-state')->group(function () {
     //     // Add other routes here...
     // });
 
-    Route::get('/dashboard', function () {
-        return Inertia::render('Admin/Welcome');
-    })->middleware(['auth', 'verified'])->name('admin.dashboard');
+    Route::get('/dashboard', [Dashboard::class, 'index'])->middleware(['auth', 'verified'])->name('admin.dashboard');
 
 
     Route::get('/_settings', function () {

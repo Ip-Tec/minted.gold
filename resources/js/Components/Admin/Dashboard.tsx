@@ -12,7 +12,7 @@ import {
     LineElement,
     PointElement,
 } from "chart.js";
-
+import { DashboardProps } from "@/types/types";
 ChartJS.register(
     CategoryScale,
     LinearScale,
@@ -25,14 +25,20 @@ ChartJS.register(
     PointElement
 );
 
-const Dashboard = () => {
-    // Dummy data for the charts
-    const productData = {
+const Dashboard: React.FC<DashboardProps> = ({
+    totalUsers,
+    totalProducts,
+    totalOrders,
+    productData,
+    orderData,
+    reviewData,
+}) => {
+    const productChartData = {
         labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul"],
         datasets: [
             {
                 label: "Products Sold",
-                data: [65, 59, 80, 81, 56, 55, 40],
+                data: Object.values(productData),
                 backgroundColor: "rgba(75, 192, 192, 0.2)",
                 borderColor: "rgba(75, 192, 192, 1)",
                 borderWidth: 1,
@@ -40,12 +46,12 @@ const Dashboard = () => {
         ],
     };
 
-    const orderData = {
+    const orderChartData = {
         labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul"],
         datasets: [
             {
                 label: "Orders",
-                data: [28, 48, 40, 19, 86, 27, 90],
+                data: Object.values(orderData),
                 backgroundColor: "rgba(153, 102, 255, 0.2)",
                 borderColor: "rgba(153, 102, 255, 1)",
                 borderWidth: 1,
@@ -53,11 +59,15 @@ const Dashboard = () => {
         ],
     };
 
-    const reviewData = {
+    const reviewChartData = {
         labels: ["Positive", "Negative", "Neutral"],
         datasets: [
             {
-                data: [300, 50, 100],
+                data: [
+                    reviewData.positive,
+                    reviewData.negative,
+                    reviewData.neutral,
+                ],
                 backgroundColor: [
                     "rgba(54, 162, 235, 0.2)",
                     "rgba(255, 99, 132, 0.2)",
@@ -72,11 +82,6 @@ const Dashboard = () => {
             },
         ],
     };
-
-    // Dummy data for the summary
-    const totalUsers = 1200;
-    const totalProducts = 150;
-    const totalOrders = 3000;
 
     return (
         <div className="p-4">
@@ -104,15 +109,15 @@ const Dashboard = () => {
                     <h3 className="text-lg font-semibold mb-2">
                         Products Sold
                     </h3>
-                    <Line data={productData} />
+                    <Line data={productChartData} />
                 </div>
                 <div className="bg-white p-4 shadow rounded-lg">
                     <h3 className="text-lg font-semibold mb-2">Orders</h3>
-                    <Bar data={orderData} />
+                    <Bar data={orderChartData} />
                 </div>
                 <div className="bg-white p-4 shadow rounded-lg">
                     <h3 className="text-lg font-semibold mb-2">Reviews</h3>
-                    <Doughnut data={reviewData} />
+                    <Doughnut data={reviewChartData} />
                 </div>
             </div>
         </div>

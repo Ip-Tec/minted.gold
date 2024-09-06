@@ -81,7 +81,7 @@ const AdminSettings: React.FC<AdminSettingsProps> = ({
     };
 
     return (
-        <div className="admin-settings">
+        <div className="admin-settings container">
             <div className="flex justify-between items-center mb-4">
                 <h2 className="text-xl font-bold">Edit Profile</h2>
                 <button
@@ -92,7 +92,7 @@ const AdminSettings: React.FC<AdminSettingsProps> = ({
                 </button>
             </div>
 
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={handleSubmit} className="container max-w-md">
                 <div className="mb-4">
                     <label className="block text-gray-700">Avatar</label>
                     <div className="relative">

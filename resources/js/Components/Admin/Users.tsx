@@ -1,23 +1,19 @@
-import React, { useState, useEffect } from "react";
-import { User } from "@/types/index"; // Define your User type
+import React from "react";
+import { User } from "@/types/index";
 
 interface AdminUserManagementProps {
-    users: User[]; // Array of users to be managed
-    onUpdateUser: (updatedUser: User) => void; // Callback for updating user state
+    users: User[];
+    searchQuery: string;
+    onSearchChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+    onUpdateUser: (updatedUser: User) => void; // Added this prop
 }
 
-const Users: React.FC<AdminUserManagementProps> = ({ users, onUpdateUser }) => {
-    const [filteredUsers, setFilteredUsers] = useState<User[]>(users);
-    const [searchQuery, setSearchQuery] = useState<string>("");
-
-    useEffect(() => {
-        setFilteredUsers(
-            users.filter((user) =>
-                user.name.toLowerCase().includes(searchQuery.toLowerCase())
-            )
-        );
-    }, [searchQuery, users]);
-
+const Users: React.FC<AdminUserManagementProps> = ({
+    users,
+    searchQuery,
+    onSearchChange,
+    onUpdateUser, // Receive onUpdateUser as a prop
+}) => {
     const handleActivateDeactivate = (user: User) => {
         const updatedUser = { ...user, isActive: !user.isActive };
         onUpdateUser(updatedUser);
@@ -36,8 +32,8 @@ const Users: React.FC<AdminUserManagementProps> = ({ users, onUpdateUser }) => {
                     type="text"
                     placeholder="Search users..."
                     value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="p-2 border rounded"
+                    onChange={onSearchChange}
+                    className="p-2 border rounded text-black"
                 />
             </div>
             <table className="w-full border-collapse">
@@ -50,11 +46,8 @@ const Users: React.FC<AdminUserManagementProps> = ({ users, onUpdateUser }) => {
                     </tr>
                 </thead>
                 <tbody>
-                    {filteredUsers.map((user) => (
-                        <tr
-                            key={user.id}
-                            className={user.isDeleted ? "opacity-50" : ""}
-                        >
+                    {users.map((user) => (
+                        <tr key={user.id}>
                             <td className="border p-2">{user.name}</td>
                             <td className="border p-2">{user.email}</td>
                             <td className="border p-2">

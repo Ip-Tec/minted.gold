@@ -1,7 +1,12 @@
 import React from "react";
 import { User } from "@/types/index";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSearch } from "@fortawesome/free-solid-svg-icons";
+import {
+    faSearch,
+    faTrash,
+    faUndo,
+    faUndoAlt,
+} from "@fortawesome/free-solid-svg-icons";
 import { useForm } from "@inertiajs/react";
 interface AdminUserManagementProps {
     users: User[];
@@ -81,7 +86,7 @@ const Users: React.FC<AdminUserManagementProps> = ({
                                     ? "Active"
                                     : "Inactive"}
                             </td>
-                            <td className="border p-2">
+                            <td className="border p-2 flex">
                                 <button
                                     onClick={() =>
                                         handleActivateDeactivate(user)
@@ -92,7 +97,11 @@ const Users: React.FC<AdminUserManagementProps> = ({
                                             : "bg-green-500"
                                     } text-white`}
                                 >
-                                    {user.isActive ? "Deactivate" : "Activate"}
+                                    {user.isActive ? (
+                                        <FontAwesomeIcon icon={faUndoAlt} />
+                                    ) : (
+                                        "Activate"
+                                    )}
                                 </button>
                                 <button
                                     onClick={() => handleDeleteUndo(user)}
@@ -102,7 +111,17 @@ const Users: React.FC<AdminUserManagementProps> = ({
                                             : "bg-gray-500"
                                     } text-white`}
                                 >
-                                    {user.isDeleted ? "Undo Delete" : "Delete"}
+                                    {user.isDeleted ? (
+                                        <FontAwesomeIcon
+                                            icon={faUndo}
+                                            className="text-red-500"
+                                        />
+                                    ) : (
+                                        <FontAwesomeIcon
+                                            icon={faTrash}
+                                            className="text-red-500"
+                                        />
+                                    )}
                                 </button>
                             </td>
                         </tr>

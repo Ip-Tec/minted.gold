@@ -11,6 +11,7 @@ export interface Product {
     description?: string;
     slang_price: number;
     category_id?: number | string;
+    features?: [] | string;
 }
 
 export interface Category {

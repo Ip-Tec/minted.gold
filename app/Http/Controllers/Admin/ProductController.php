@@ -15,12 +15,15 @@ class ProductController extends Controller
     {
         // Get all products with their category relation
         $products = Product::with('category')->get();
+
+        // dd($products);
         return Inertia::render('Admin/Product', ["products" => $products]);
     }
 
     // Store a newly created product
     public function store(Request $request)
     {
+        // dd($request);
         // Validate the request data
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
@@ -28,9 +31,9 @@ class ProductController extends Controller
             'category_id' => 'required|exists:categories,id',
             'price' => 'required|numeric',
             'slang_price' => 'nullable|numeric',
-            'main_image' => 'nullable|image|max:2048',  // Handling image upload
+            'main_image' => 'nullable|image|max:2048',
             'images' => 'nullable|array',
-            'images.*' => 'image|max:2048',  // Validate each image
+            'images.*' => 'image|max:2048',
             'rating' => 'nullable|numeric|between:1,5',
             'features' => 'nullable|array',
         ]);

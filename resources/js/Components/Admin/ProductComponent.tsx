@@ -9,11 +9,16 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { Product } from "@/types/types";
 import ProductForm from "@/Components/Admin/Form/ProductForm";
+import { Link, useForm, usePage } from "@inertiajs/react";
+import Modal from "@/Components/User/Modal";
 
-const ProductComponent = () => {
-    const [products, setProducts] = useState<Product[]>([
-        // Dummy product data
-    ]);
+interface ProductsProp {
+    product: Product[];
+}
+
+const ProductComponent: React.FC<ProductsProp> = ({ product }) => {
+    const { post, get, put, delete: destory, data, setData } = useForm();
+    const [products, setProducts] = useState(product);
 
     const [searchTerm, setSearchTerm] = useState("");
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -158,12 +163,14 @@ const ProductComponent = () => {
 
             {/* Edit Product Modal */}
             {isEditModalOpen && productToEdit && (
-                <div
-                    className="fixed inset-0 bg-black bg-opacity-70 z-10 flex justify-center items-center"
-                    onClick={closeEditModal}
+                <Modal
+                    show={isEditModalOpen}
+                    maxWidth="lg"
+                    closeable={isEditModalOpen}
+                    onClose={closeEditModal}
                 >
                     <div
-                        className="bg-gray-800 w-1/3 p-6 text-white"
+                        className="bg-gray-800 mt-8 my-4 p-6 text-white"
                         onClick={(e) => e.stopPropagation()}
                     >
                         <h3 className="text-xl font-bold mb-4">Edit Product</h3>
@@ -174,7 +181,7 @@ const ProductComponent = () => {
                             isEditing={true}
                         />
                     </div>
-                </div>
+                </Modal>
             )}
 
             {/* Delete Confirmation Modal */}

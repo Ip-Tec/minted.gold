@@ -72,6 +72,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
                 data: { id: initialValues.id },
                 preserveScroll: true,
                 preserveState: true,
+                only:["product"],
                 onSuccess: () => {
                     reset();
                     onClose();
@@ -85,7 +86,6 @@ const ProductForm: React.FC<ProductFormProps> = ({
                 only: ["product"],
                 onSuccess: (page) => {
                     console.log({ page });
-
                     reset();
                     onClose();
                 },

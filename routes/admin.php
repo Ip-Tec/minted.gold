@@ -31,7 +31,7 @@ Route::prefix('admin-state')->group(function () {
     Route::get('/users', [UserController::class, 'index'])->name('admin.users');
 
     Route::get('/_categories', [AdminCategoryController::class, "index"])->name('admin.categories.index');
-    Route::get('/_categories', [AdminCategoryController::class, "index"])->name('admin.categories.index');
+    Route::get('/_categories', [AdminCategoryController::class, "show"])->name('admin.categories.show');
 
     Route::get('/_reviews', [AdminReviewController::class, "index"]);
     Route::apiResource('reviews', AdminReviewController::class);

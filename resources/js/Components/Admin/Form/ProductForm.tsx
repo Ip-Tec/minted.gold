@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Product } from "@/types/types";
+import React, { useState, useEffect } from "react";
+import { Product, Category } from "@/types/types";
 import { useForm } from "@inertiajs/react";
 
 interface ProductFormProps {
@@ -7,6 +7,7 @@ interface ProductFormProps {
     onSubmit: (product: Product) => void;
     onClose: () => void;
     isEditing: boolean;
+    Categories?: Category;
 }
 
 const ProductForm: React.FC<ProductFormProps> = ({
@@ -14,6 +15,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
     onSubmit,
     onClose,
     isEditing,
+    Categories
 }) => {
     const { data, setData, post, get, put, reset, errors } = useForm({
         name: initialValues?.name || "",
@@ -26,6 +28,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
         main_image: initialValues?.main_image || null,
         images: initialValues?.images ? initialValues?.images.split(",") : [],
     });
+    const [categories, setCategories] = useState<any>();
     const [imagePreviews, setImagePreviews] = useState<string[]>(
         initialValues.images ? initialValues.images.split(",") : []
     );
@@ -33,35 +36,42 @@ const ProductForm: React.FC<ProductFormProps> = ({
         initialValues.main_image || null
     );
 
+    useEffect(() => {
+        get(route("admin.categories.show"), {
+            preserveScroll: true,
+            preserveState: true,
+            only: ["categories"],
+            onSuccess: (res) => {
+                console.log({ res });
+
+                // setCategories(res.data.categories);
+            },
+        });
+    }, []);
+
     // Handle file input changes for regular images
     const handleImageChange = (
         e: React.ChangeEvent<HTMLInputElement>,
         index: number
     ) => {
         if (e.target.files && e.target.files[0]) {
-            const reader = new FileReader();
-            reader.onload = () => {
-                const updatedImages = [...imagePreviews];
-                updatedImages[index] = reader.result as string;
-                setImagePreviews(updatedImages);
-                setData("images", updatedImages);
-            };
-            reader.readAsDataURL(e.target.files[0]);
-        }
-    };
+            const updatedImages = [...imagePreviews];
+            updatedImages[index] = URL.createObjectURL(e.target.files[0]); // Preview image
+            setImagePreviews(updatedImages);
 
-    // Handle file input change for main image
+            const files = [...data.images]; // Get previous files
+            files[index] = URL.createObjectURL(e.target.files[0]); // Add new file as URL string
+            setData("images", files);
+        }
+    }; // Handle file input change for main image
     const handleMainImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files && e.target.files[0]) {
+            setData("main_image", URL.createObjectURL(e.target.files[0])); // Convert File to URL string
             const reader = new FileReader();
-            reader.onload = () => {
-                setMainImagePreview(reader.result as string);
-                setData("main_image", reader.result as string);
-            };
+            reader.onload = () => setMainImagePreview(reader.result as string);
             reader.readAsDataURL(e.target.files[0]);
         }
     };
-
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         setData(data);
@@ -72,7 +82,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
                 data: { id: initialValues.id },
                 preserveScroll: true,
                 preserveState: true,
-                only:["product"],
+                only: ["product"],
                 onSuccess: () => {
                     reset();
                     onClose();
@@ -233,14 +243,21 @@ const ProductForm: React.FC<ProductFormProps> = ({
                 <label className="block text-sm font-medium mb-2">
                     Category
                 </label>
-                <input
-                    type="text"
+                <select
                     name="category_id"
-                    defaultValue={initialValues.category_id}
+                    value={data.category_id}
                     className="w-full p-2 border rounded text-black"
                     required
                     onChange={(e) => setData("category_id", e.target.value)}
-                />
+                >
+                    {/* {categories.map(
+                        (category: { id: number; name: string }) => (
+                            <option key={category.id} value={category.id}>
+                                {category.name}
+                            </option>
+                        )
+                    )} */}
+                </select>
             </div>
 
             {/* Submit and Cancel Buttons */}

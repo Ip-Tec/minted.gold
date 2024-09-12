@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Inertia\Inertia;
 use App\Models\Category;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class CategoryController extends Controller
 {
@@ -44,18 +45,20 @@ class CategoryController extends Controller
             'name' => $request->name,
             'description' => $request->description,
             'image' => $image_path,
-            'created_by' => auth()->id(),
+            'created_by' => Auth::user()->id,
         ]);
 
         return redirect()->route('categories.index')->with('success', 'Category created successfully.');
     }
-
     /**
      * Display the specified resource.
      */
-    public function show(Category $category)
+    public function show()
     {
-        //
+
+        $categories = Category::all();
+        // dd($categories);
+        return back()->with(['categories' => $categories]);
     }
 
     /**

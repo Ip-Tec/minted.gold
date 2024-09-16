@@ -80,31 +80,28 @@ const ProductForm: React.FC<ProductFormProps> = ({
         e.preventDefault();
 
         if (isEditing) {
-            // Update product
-            router.post("products/", {
-                ...data,
-                _method: "put",
+            put(route("admin.products.update", { product: initialValues.id }), {
                 preserveScroll: true,
                 preserveState: true,
-                forceFormData: true, // Ensure that FormData is used
-                only: ["product"],
-            }, {
-                onSuccess: (page) => {
-                    console.log({ page }); // Log the response from the server
-                    onSubmit(page.props.product as Product); // Call the onSubmit callback with the updated product
-                    reset(); // Reset the form data
-                    onClose(); // Call the onClose callback to close the modal
+                forceFormData: true,
+                only: ["product", "success"],
+                onSuccess: (page: any) => {
+                    console.log({ page });
+                    onSubmit(page.props.product as Product);
+                    onClose();
+                    reset();
+                },
+                onError: (errors) => {
+                    console.log({ errors });
                 },
             });
         } else {
             // Create product
             post(route("admin.products.store"), {
-                ...data,
                 preserveScroll: true,
                 preserveState: true,
                 forceFormData: true, // Ensure FormData is used
                 only: ["product", "success"],
-            }, {
                 onSuccess: (page) => {
                     console.log({ page });
                     onSubmit(page.props.product as Product);
@@ -114,6 +111,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
             });
         }
     };
+
     return (
         <form
             onSubmit={handleSubmit}

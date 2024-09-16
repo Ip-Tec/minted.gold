@@ -50,8 +50,20 @@ const ProductComponent: React.FC<ProductsProp> = ({ product }) => {
     };
 
     const handleDeleteProduct = (id: number) => {
-        setProducts(products.filter((product) => product.id !== id));
-        setIsDeleteModalOpen(false);
+        destory(route("admin.products.destroy", id), {
+            preserveScroll: true,
+            preserveState: true,
+            only: ["product", "success"],
+            onSuccess: (page: any) => {
+                console.log({ page });
+
+                setProducts(products.filter((product) => product.id !== id));
+                setIsDeleteModalOpen(false);
+            },
+            onError: (errors) => {
+                console.log({ errors });
+            },
+        });
     };
 
     const openEditModal = (product: Product) => {
@@ -112,7 +124,11 @@ const ProductComponent: React.FC<ProductsProp> = ({ product }) => {
                         <tr key={product.id}>
                             <td className="border-b p-2">{product.name}</td>
                             <td className="border-b p-2">
-                                <img src={`${product.main_image}`} alt={product.name} className="w-16 h-16 object-cover" />
+                                <img
+                                    src={`${product.main_image}`}
+                                    alt={product.name}
+                                    className="w-16 h-16 object-cover"
+                                />
                             </td>
                             <td className="border-b p-2">
                                 {
@@ -126,13 +142,13 @@ const ProductComponent: React.FC<ProductsProp> = ({ product }) => {
                             <td className="border-b p-2 flex space-x-2">
                                 <button
                                     onClick={() => openEditModal(product)}
-                                    className="text-blue-500 hover:underline"
+                                    className="text-blue-500 hover:underline p-4"
                                 >
                                     <FontAwesomeIcon icon={faEdit} />
                                 </button>
                                 <button
                                     onClick={() => openDeleteModal(product)}
-                                    className="text-red-500 hover:underline"
+                                    className="text-red-500 hover:underline p-4"
                                 >
                                     <FontAwesomeIcon icon={faTrash} />
                                 </button>

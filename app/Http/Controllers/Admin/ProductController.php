@@ -113,7 +113,8 @@ class ProductController extends Controller
     {
         $product = Product::findOrFail($id);
 
-        dd($product);
+        // Validate the request data
+        dd($request, $id);
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
@@ -121,12 +122,10 @@ class ProductController extends Controller
             'price' => 'required|numeric',
             'slang_price' => 'nullable|numeric',
             'main_image' => [
-                'required',
                 'nullable',
-                File::image()
-                    ->max(12 * 12024),
+                File::image()->max(12 * 12024),
             ], // Main image validation
-            'images' => 'nullable|array',              // Validate array of images
+            'images' => 'nullable|array',
             'images.*' => 'image|max:12048',
             'rating' => 'nullable|numeric|between:1,5',
             'features' => 'nullable|array',
@@ -135,15 +134,15 @@ class ProductController extends Controller
         // Generate slug from the product name
         $slug = Str::slug($validatedData['name']);
 
-        // Handle image upload if a new main image is uploaded
-        $mainImagePath = null;
+        // Handle main image upload if a new main image is uploaded
+        $mainImagePath = $product->main_image; // Keep existing path by default
         if ($request->hasFile('main_image')) {
             $mainImageFileName = $slug . '_' . uniqid() . '_main_image.' . $request->file('main_image')->getClientOriginalExtension();
             $mainImagePath = $request->file('main_image')->storeAs('products', $mainImageFileName, 'public');
         }
 
-        // Process additional images if provided
-        $imagePaths = [];
+        // Handle additional images if provided
+        $imagePaths = json_decode($product->images, true) ?? []; // Preserve existing images
         if ($request->hasFile('images')) {
             foreach ($request->file('images') as $index => $image) {
                 $imageFileName = $slug . '_' . uniqid() . '_image_' . $index . '.' . $image->getClientOriginalExtension();
@@ -151,27 +150,43 @@ class ProductController extends Controller
             }
         }
 
+        // Update the product with new data
         $product->update([
             'name' => $validatedData['name'],
-            'description' => $validatedData['description'] ?? '',
+            'description' => $validatedData['description'] ?? $product->description,
             'category_id' => $validatedData['category_id'],
             'price' => $validatedData['price'],
-            'slang_price' => $validatedData['slang_price'] ?? null,
-            'slug' => Str::slug($validatedData['name']),
-            'images' => $validatedData['images'] ?? $product->images,
+            'slang_price' => $validatedData['slang_price'] ?? $product->slang_price,
+            'slug' => $slug,
+            'main_image' => $mainImagePath,
+            'images' => json_encode($imagePaths),
             'rating' => $validatedData['rating'] ?? $product->rating,
-            'features' => $validatedData['features'] ?? $product->features,
+            'features' => $validatedData['features'] ? json_encode($validatedData['features']) : $product->features,
         ]);
 
-        return back()->with(["product" => $product]);
+        return Inertia::render('Admin/Product', [
+            'product' => $product,
+            'success' => 'Product updated successfully!',
+        ]);
     }
+
 
     // Remove the specified product
     public function destroy($id)
     {
+        // First check if the authenticated user is an admin
+        // if (!Auth::user()->is_admin) {
+        //     return Inertia::render('Auth/Login', [
+        //         'error' => 'Unauthorized access. Admins only.',
+        //     ]);
+        // }
+
         $product = Product::findOrFail($id);
         $product->delete();
 
-        return back()->with(['message' => 'Product deleted successfully.']);
+        return Inertia::render('Admin/Product', [
+            'product' => $product,
+            'success' => 'Product deleted successfully.'
+        ]);
     }
 }

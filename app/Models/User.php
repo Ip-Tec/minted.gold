@@ -19,6 +19,7 @@ class User extends Authenticatable
     protected $fillable = [
         'name',
         'email',
+        'is_admin',
         'password',
         'avatar',
         'phone_number',
@@ -29,7 +30,6 @@ class User extends Authenticatable
         "year",
         'state',
         'country',
-        'isAdmin',
         'postal_code',
     ];
 
@@ -54,6 +54,11 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function isAdmin()
+    {
+        return $this->is_admin;
     }
 
     public function cart()

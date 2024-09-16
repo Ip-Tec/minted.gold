@@ -36,11 +36,17 @@ Route::middleware([
             'destroy' => 'admin.products.destroy',
         ]);
 
+        Route::resource('_categories', AdminCategoryController::class)->names([
+            'index' => 'admin.categories.index',
+            'create' => 'admin.categories.create',
+            'store' => 'admin.categories.store',
+            'show' => 'admin.categories.show',
+            // 'edit' => 'admin.products.edit',
+            'update' => 'admin.categories.update',
+            'destroy' => 'admin.categories.destroy',
+        ]);
+
         Route::get('/users', [UserController::class, 'index'])->name('admin.users');
-
-        Route::get('/_categories', [AdminCategoryController::class, "index"])->name('admin.categories.index');
-
-        Route::get('/_categories', [AdminCategoryController::class, "show"])->name('admin.categories.show');
 
         Route::get('/_reviews', [AdminReviewController::class, "index"]);
         Route::apiResource('reviews', AdminReviewController::class);
@@ -73,16 +79,6 @@ Route::middleware([
 
         Route::get('/categories', [CategoryController::class, 'index'])
             ->name('admin.categories.index');
-
-        Route::middleware(['admin'])->group(function () {
-            Route::get(
-                '/categories/create',
-                [CategoryController::class, 'create']
-            )->name('admin.categories.create');
-
-            Route::post('/categories', [CategoryController::class, 'store'])
-                ->name('admin.categories.store');
-        });
     });
 });
 require __DIR__ . '/auth.php';

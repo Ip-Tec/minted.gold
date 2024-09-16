@@ -1,7 +1,6 @@
-// src/Components/Admin/Form/CategoryForm.tsx
-
 import React, { useState } from "react";
 import { Category } from "@/types/types";
+import { useForm } from "@inertiajs/react";
 
 interface CategoryFormProps {
     initialValues: Category;
@@ -17,10 +16,18 @@ const CategoryForm: React.FC<CategoryFormProps> = ({
     isEditing,
 }) => {
     const [name, setName] = useState<string>(initialValues.name);
-    const [image, setImage] = useState<string>(initialValues.image);
+    const [image, setImage] = useState<string | Blob>(initialValues.image);
+    const [description, setDescription] = useState<string | undefined>(
+        initialValues.description
+    );
     const [previewImage, setPreviewImage] = useState<string>(
         initialValues.image
     );
+    const { data, setData, post, put, reset, errors } = useForm({
+        name: name || "",
+        image: image || "",
+        description: description || "",
+    });
     const [isDragOver, setIsDragOver] = useState<boolean>(false);
 
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -29,7 +36,7 @@ const CategoryForm: React.FC<CategoryFormProps> = ({
             const reader = new FileReader();
             reader.onloadend = () => {
                 setPreviewImage(reader.result as string);
-                setImage(reader.result as string);
+                setImage(file);
             };
             reader.readAsDataURL(file);
         }
@@ -53,7 +60,7 @@ const CategoryForm: React.FC<CategoryFormProps> = ({
             const reader = new FileReader();
             reader.onloadend = () => {
                 setPreviewImage(reader.result as string);
-                setImage(reader.result as string);
+                setImage(file);
             };
             reader.readAsDataURL(file);
         }
@@ -61,12 +68,66 @@ const CategoryForm: React.FC<CategoryFormProps> = ({
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        const category: Category = {
-            ...initialValues,
-            name,
-            image,
-        };
-        onSubmit(category);
+
+        const formData = new FormData();
+
+        // Add the form fields to FormData
+        formData.append("name", name);
+        formData.append("description", description || "");
+        if (image instanceof Blob) {
+            formData.append("image", image);
+        }
+
+        if (isEditing) {
+            put(
+                route("admin.categories.update", {
+                    _category: initialValues.id,
+                }),
+                {
+                    data: formData, // Use FormData
+                    preserveScroll: true,
+                    preserveState: true,
+                    forceFormData: true, // Force formData to ensure file uploads work
+                    only: ["category", "success"],
+                    onSuccess: (page: any) => {
+                        onSubmit(page.props.category as Category);
+                        onClose();
+                        reset();
+                    },
+                    onError: (formErrors) => {
+                        // Handle errors
+                        errors.name = formErrors.name;
+                        errors.description = formErrors.description;
+                        errors.image = formErrors.image;
+                        // setNameError(formErrors.name);
+                        // setDescriptionError(formErrors.description);
+                        // setImageError(formErrors.image);
+                    },
+                }
+            );
+        } else {
+            post(route("admin.categories.store"), {
+                data: formData, // Use FormData for new category
+                preserveScroll: true,
+                preserveState: true,
+                forceFormData: true,
+                only: ["category", "success"],
+                onSuccess: (page) => {
+                    onSubmit(page.props.category as Category);
+                    reset();
+                    onClose();
+                },
+                onError: (formErrors) => {
+                    // Handle errors
+                    errors.name = formErrors.name;
+                    errors.description = formErrors.description;
+                    errors.image = formErrors.image;
+                    // setNameError(formErrors.name);
+                    // setDescriptionError(formErrors.description);
+                    // setImageError(formErrors.image);
+                },
+            });
+        }
     };
 
     return (
@@ -83,9 +144,33 @@ const CategoryForm: React.FC<CategoryFormProps> = ({
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     placeholder="Enter category name"
-                    className="w-full p-2 border rounded text-gray-700"
+                    className={`w-full p-2 border rounded text-gray-700 ${
+                        errors.name ? "border-red-500" : ""
+                    }`}
                     required
                 />
+                {errors.name && (
+                    <p className="text-red-500 text-xs mt-1">{errors.name}</p>
+                )}
+            </div>
+            <div className="mb-4">
+                <label className="block text-sm font-medium mb-2">
+                    Category Description
+                </label>
+                <textarea
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
+                    placeholder="Enter category description"
+                    className={`w-full p-2 border rounded text-gray-700 ${
+                        errors.description ? "border-red-500" : ""
+                    }`}
+                    required
+                />
+                {errors.description && (
+                    <p className="text-red-500 text-xs mt-1">
+                        {errors.description}
+                    </p>
+                )}
             </div>
             <div className="mb-4">
                 <label className="block text-sm font-medium mb-2">
@@ -126,6 +211,9 @@ const CategoryForm: React.FC<CategoryFormProps> = ({
                         className="hidden"
                     />
                 </div>
+                {errors.image && (
+                    <p className="text-red-500 text-xs mt-1">{errors.image}</p>
+                )}
             </div>
             <div className="flex justify-end space-x-4">
                 <button

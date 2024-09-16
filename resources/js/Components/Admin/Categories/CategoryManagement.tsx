@@ -1,11 +1,10 @@
-// src/Components/Admin/Categories/CategoryManagement.tsx
-
 import React, { useState, useEffect } from "react";
 import { Category } from "@/types/types";
 import CategoryForm from "@/Components/Admin/Form/CategoryForm";
 import Modal from "@/Components/User/Modal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
+import { useForm } from "@inertiajs/react";
 
 interface AdminCategoryManagementProps {
     categories: Category[]; // Array of categories to be managed
@@ -20,6 +19,7 @@ const CategoryManagement: React.FC<AdminCategoryManagementProps> = ({
     onUpdateCategory,
     onDeleteCategory,
 }) => {
+    const { post, get, put, delete: destory, data, setData } = useForm();
     const [filteredCategories, setFilteredCategories] =
         useState<Category[]>(categories);
     const [searchQuery, setSearchQuery] = useState<string>("");
@@ -28,6 +28,12 @@ const CategoryManagement: React.FC<AdminCategoryManagementProps> = ({
         null
     );
     const [isFormVisible, setIsFormVisible] = useState<boolean>(false);
+
+    // New states for delete modal
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
+    const [categoryToDelete, setCategoryToDelete] = useState<Category | null>(
+        null
+    );
 
     useEffect(() => {
         setFilteredCategories(
@@ -43,37 +49,37 @@ const CategoryManagement: React.FC<AdminCategoryManagementProps> = ({
         setIsFormVisible(true);
     };
 
-    const [deletedCategories, setDeletedCategories] = useState<Category[]>([]);
-
     const handleDelete = (categoryId: number) => {
         const categoryToDelete = categories.find(
             (cat) => cat.id === categoryId
         );
-        if (
-            categoryToDelete &&
-            confirm("Are you sure you want to delete this category?")
-        ) {
-            onDeleteCategory(categoryId);
-            setDeletedCategories([...deletedCategories, categoryToDelete]);
-
-            // Set a timeout to remove the category permanently after, say, 5 seconds
-            setTimeout(() => {
-                setDeletedCategories((prev) =>
-                    prev.filter((cat) => cat.id !== categoryId)
-                );
-            }, 5000);
+        if (categoryToDelete) {
+            setIsDeleteModalOpen(true);
+            setCategoryToDelete(categoryToDelete); // Corrected to setCategoryToDelete
         }
     };
 
-    const handleUndoDelete = (categoryId: number) => {
-        const category = deletedCategories.find((cat) => cat.id === categoryId);
-        if (category) {
-            // Implement the logic to restore the category
-            // This might involve sending a request to the backend to restore
-            setDeletedCategories((prev) =>
-                prev.filter((cat) => cat.id !== categoryId)
-            );
-        }
+    const confirmDelete = (id: number) => {
+        destory(route("admin.categories.destroy", id), {
+            preserveScroll: true,
+            preserveState: true,
+            only: ["category", "success"],
+            onSuccess: (page: any) => {
+                console.log({ page });
+                setFilteredCategories(
+                    filteredCategories.filter((category) => category.id !== id)
+                );
+                setIsDeleteModalOpen(false); // Close modal after deletion
+            },
+            onError: (errors) => {
+                console.log({ errors });
+            },
+        });
+    };
+
+    const closeDeleteModal = () => {
+        setIsDeleteModalOpen(false);
+        setCategoryToDelete(null);
     };
 
     const handleFormSubmit = (category: Category) => {
@@ -122,12 +128,7 @@ const CategoryManagement: React.FC<AdminCategoryManagementProps> = ({
                 <tbody>
                     {filteredCategories && filteredCategories.length > 0 ? (
                         filteredCategories.map((category) => (
-                            <tr
-                                key={category.id}
-                                className={
-                                    category.isDeleted ? "opacity-50" : ""
-                                }
-                            >
+                            <tr key={category.id}>
                                 <td className="border p-2">{category.name}</td>
                                 <td className="border p-2">
                                     <img
@@ -164,12 +165,6 @@ const CategoryManagement: React.FC<AdminCategoryManagementProps> = ({
                 </tbody>
             </table>
             <div className="my-4">
-                {/* <button
-                    onClick={handleAddNew}
-                    className="bg-blue-500 px-4 py-2 rounded text-white hover:bg-blue-600"
-                >
-                    Add New Category
-                </button> */}
                 <button
                     onClick={handleAddNew}
                     className="fixed bottom-4 right-4 bg-blue-500 py-4 px-5 rounded-full text-white shadow-lg hover:bg-blue-600"
@@ -197,6 +192,46 @@ const CategoryManagement: React.FC<AdminCategoryManagementProps> = ({
                 show={isFormVisible}
                 onClose={handleFormClose}
             ></Modal>
+
+            {/* Delete Confirmation Modal */}
+            {isDeleteModalOpen && categoryToDelete && (
+                <div
+                    className="fixed inset-0 bg-black bg-opacity-70 z-10 flex justify-center items-center"
+                    onClick={closeDeleteModal}
+                >
+                    <div
+                        className="bg-gray-800 w-1/3 p-6 text-white"
+                        onClick={(e) => e.stopPropagation()}
+                    >
+                        <h3 className="text-xl font-bold mb-4">
+                            Confirm Deletion
+                        </h3>
+                        <p className="mb-4">
+                            Are you sure you want to delete{" "}
+                            {categoryToDelete.name}?
+                        </p>
+                        <div className="font-bold text-base bg-red-500 rounded py-1 px-3 m-2">
+                            All product in {categoryToDelete.name} category will be deleted
+                        </div>
+                        <div className="flex justify-end space-x-4">
+                            <button
+                                onClick={() =>
+                                    confirmDelete(categoryToDelete.id)
+                                }
+                                className="bg-red-500 px-4 py-2 rounded text-white hover:bg-red-600"
+                            >
+                                Delete
+                            </button>
+                            <button
+                                onClick={closeDeleteModal}
+                                className="bg-gray-500 px-4 py-2 rounded text-white hover:bg-gray-600"
+                            >
+                                Cancel
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

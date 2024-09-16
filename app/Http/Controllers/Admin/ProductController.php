@@ -175,11 +175,11 @@ class ProductController extends Controller
     public function destroy($id)
     {
         // First check if the authenticated user is an admin
-        // if (!Auth::user()->is_admin) {
-        //     return Inertia::render('Auth/Login', [
-        //         'error' => 'Unauthorized access. Admins only.',
-        //     ]);
-        // }
+        if (!Auth::user()->is_admin) {
+            return Inertia::render('Auth/Login', [
+                'error' => 'Unauthorized access. Admins only.',
+            ]);
+        }
 
         $product = Product::findOrFail($id);
         $product->delete();

@@ -21,6 +21,7 @@ export interface Category {
     isDeleted?: boolean;
     createdAt?: boolean;
     updatedAt?: boolean;
+    description?: string;
 }
 
 export interface CartItem {

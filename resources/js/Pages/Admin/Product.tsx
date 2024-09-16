@@ -1,4 +1,4 @@
-import { Link, Head } from "@inertiajs/react";
+import { Link, Head, usePage } from "@inertiajs/react";
 import { PageProps } from "@/types";
 import Authenticated from "@/Layouts/AuthenticatedLayout";
 import AdminLayout from "@/Layouts/Admin/AdminLayout";
@@ -15,13 +15,17 @@ export default function ProductPage({
     auth: { user: User };
     products: Product[];
 }>) {
+    const { props } = usePage<{ success?: string }>();
+    const { success } = props;
     console.log({ products });
+    
     return (
-        <>
-            <AdminLayout auth={auth.user}>
-                <Head title="Product Management" />
-                <ProductComponent product={products} />
-            </AdminLayout>
-        </>
+        <AdminLayout auth={auth.user}>
+            {success && (
+                <div className="alert alert-success">{success}</div>
+            )}
+            <Head title="Product Management" />
+            <ProductComponent product={products} />
+        </AdminLayout>
     );
 }

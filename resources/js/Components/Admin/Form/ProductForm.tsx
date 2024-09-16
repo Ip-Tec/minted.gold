@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Product, Category } from "@/types/types";
-import { useForm } from "@inertiajs/react";
+import { router, useForm, usePage } from "@inertiajs/react";
 
 interface ProductFormProps {
     initialValues: Product;
@@ -15,7 +15,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
     onSubmit,
     onClose,
     isEditing,
-    Categories
+    Categories,
 }) => {
     const { data, setData, post, get, put, reset, errors } = useForm({
         name: initialValues?.name || "",
@@ -28,26 +28,28 @@ const ProductForm: React.FC<ProductFormProps> = ({
         main_image: initialValues?.main_image || null,
         images: initialValues?.images ? initialValues?.images.split(",") : [],
     });
-    const [categories, setCategories] = useState<any>();
-    const [imagePreviews, setImagePreviews] = useState<string[]>(
-        initialValues.images ? initialValues.images.split(",") : []
-    );
+    const { categories } = usePage<{ categories: Category[] }>().props;
+    // console.log({ categories });
+
+    const [imagePreviews, setImagePreviews] = useState<string[]>(() => {
+        if (typeof initialValues.images === "string") {
+            try {
+                // Attempt to parse the string as JSON
+                const parsedImages = JSON.parse(initialValues.images);
+                return Array.isArray(parsedImages) ? parsedImages : [];
+            } catch (error) {
+                // If parsing fails, fallback to splitting the string by commas
+                return initialValues.images.split(",");
+            }
+        } else if (Array.isArray(initialValues.images)) {
+            return initialValues.images; // If it's already an array, use it directly
+        }
+        return [];
+    });
+
     const [mainImagePreview, setMainImagePreview] = useState<string | null>(
         initialValues.main_image || null
     );
-
-    useEffect(() => {
-        get(route("admin.categories.show"), {
-            preserveScroll: true,
-            preserveState: true,
-            only: ["categories"],
-            onSuccess: (res) => {
-                console.log({ res });
-
-                // setCategories(res.data.categories);
-            },
-        });
-    }, []);
 
     // Handle file input changes for regular images
     const handleImageChange = (
@@ -59,54 +61,64 @@ const ProductForm: React.FC<ProductFormProps> = ({
             updatedImages[index] = URL.createObjectURL(e.target.files[0]); // Preview image
             setImagePreviews(updatedImages);
 
-            const files = [...data.images]; // Get previous files
-            files[index] = URL.createObjectURL(e.target.files[0]); // Add new file as URL string
-            setData("images", files);
-        }
-    }; // Handle file input change for main image
-    const handleMainImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        if (e.target.files && e.target.files[0]) {
-            setData("main_image", URL.createObjectURL(e.target.files[0])); // Convert File to URL string
-            const reader = new FileReader();
-            reader.onload = () => setMainImagePreview(reader.result as string);
-            reader.readAsDataURL(e.target.files[0]);
+            const files = [...data.images]; // Get previous files (not URLs, but actual files)
+            files[index] = e.target.files[0]; // Add the new file as the actual file object
+            setData("images", files); // Store actual files, not URLs
         }
     };
+
+    const handleMainImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files && e.target.files[0]) {
+            setData("main_image", e.target.files[0]); // Store actual file
+            const reader = new FileReader();
+            reader.onload = () => setMainImagePreview(reader.result as string);
+            reader.readAsDataURL(e.target.files[0]); // Preview the file
+        }
+    };
+
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        setData(data);
 
         if (isEditing) {
             // Update product
-            put(route("admin.products.update"), {
-                data: { id: initialValues.id },
+            router.post("products/", {
+                ...data,
+                _method: "put",
                 preserveScroll: true,
                 preserveState: true,
+                forceFormData: true, // Ensure that FormData is used
                 only: ["product"],
-                onSuccess: () => {
-                    reset();
-                    onClose();
+            }, {
+                onSuccess: (page) => {
+                    console.log({ page }); // Log the response from the server
+                    onSubmit(page.props.product as Product); // Call the onSubmit callback with the updated product
+                    reset(); // Reset the form data
+                    onClose(); // Call the onClose callback to close the modal
                 },
             });
         } else {
             // Create product
             post(route("admin.products.store"), {
+                ...data,
                 preserveScroll: true,
                 preserveState: true,
-                only: ["product"],
+                forceFormData: true, // Ensure FormData is used
+                only: ["product", "success"],
+            }, {
                 onSuccess: (page) => {
                     console.log({ page });
+                    onSubmit(page.props.product as Product);
                     reset();
                     onClose();
                 },
             });
         }
     };
-
     return (
         <form
             onSubmit={handleSubmit}
             className="w-full h-full pb-6 overflow-y-auto scrollbar-hide"
+            encType="multipart/form-data"
         >
             {/* Name Input */}
             <div className="mb-3">
@@ -119,6 +131,11 @@ const ProductForm: React.FC<ProductFormProps> = ({
                     required
                     onChange={(e) => setData("name", e.target.value)}
                 />
+                {errors.name && (
+                    <div className="text-red-500 text-sm mt-1">
+                        {errors.name}
+                    </div>
+                )}
             </div>
 
             {/* Price and Slang Price */}
@@ -135,6 +152,11 @@ const ProductForm: React.FC<ProductFormProps> = ({
                         required
                         onChange={(e) => setData("price", e.target.value)}
                     />
+                    {errors.price && (
+                        <div className="text-red-500 text-sm mt-1">
+                            {errors.price}
+                        </div>
+                    )}
                 </div>
                 <div className="mb-3">
                     <label className="block text-sm font-medium mb-2">
@@ -148,6 +170,11 @@ const ProductForm: React.FC<ProductFormProps> = ({
                         required
                         onChange={(e) => setData("slang_price", e.target.value)}
                     />
+                    {errors.slang_price && (
+                        <div className="text-red-500 text-sm mt-1">
+                            {errors.slang_price}
+                        </div>
+                    )}
                 </div>
                 <div className="mb-3">
                     <label className="block text-sm font-medium mb-2">
@@ -163,6 +190,11 @@ const ProductForm: React.FC<ProductFormProps> = ({
                         required
                         onChange={(e) => setData("rating", e.target.value)}
                     />
+                    {errors.rating && (
+                        <div className="text-red-500 text-sm mt-1">
+                            {errors.rating}
+                        </div>
+                    )}
                 </div>
             </div>
 
@@ -192,6 +224,11 @@ const ProductForm: React.FC<ProductFormProps> = ({
                         className="absolute inset-0 opacity-0 cursor-pointer"
                     />
                 </div>
+                {errors.main_image && (
+                    <div className="text-red-500 text-sm mt-1">
+                        {errors.main_image}
+                    </div>
+                )}
             </div>
 
             {/* Additional Images Input */}
@@ -202,7 +239,15 @@ const ProductForm: React.FC<ProductFormProps> = ({
                         <div key={index} className="relative">
                             {imagePreviews[index] ? (
                                 <img
-                                    src={imagePreviews[index]}
+                                    src={
+                                        imagePreviews[index]
+                                            ? imagePreviews[index].startsWith(
+                                                  "blob:"
+                                              )
+                                                ? imagePreviews[index] // If it's a blob, use it directly
+                                                : `${window.location.origin}/storage/${imagePreviews[index]}` // Otherwise, use the storage URL
+                                            : ""
+                                    }
                                     alt={`Preview ${index + 1}`}
                                     className="h-20 w-24 object-cover border rounded"
                                 />
@@ -222,6 +267,11 @@ const ProductForm: React.FC<ProductFormProps> = ({
                         </div>
                     ))}
                 </div>
+                {errors.images && (
+                    <div className="text-red-500 text-sm mt-1">
+                        {errors.images}
+                    </div>
+                )}
             </div>
 
             {/* Description Input */}
@@ -236,6 +286,11 @@ const ProductForm: React.FC<ProductFormProps> = ({
                     required
                     onChange={(e) => setData("description", e.target.value)}
                 />
+                {errors.description && (
+                    <div className="text-red-500 text-sm mt-1">
+                        {errors.description}
+                    </div>
+                )}
             </div>
 
             {/* Category Input */}
@@ -250,14 +305,19 @@ const ProductForm: React.FC<ProductFormProps> = ({
                     required
                     onChange={(e) => setData("category_id", e.target.value)}
                 >
-                    {/* {categories.map(
-                        (category: { id: number; name: string }) => (
+                    {categories &&
+                        Array.isArray(categories) &&
+                        categories.map((category) => (
                             <option key={category.id} value={category.id}>
                                 {category.name}
                             </option>
-                        )
-                    )} */}
+                        ))}
                 </select>
+                {errors.category_id && (
+                    <div className="text-red-500 text-sm mt-1">
+                        {errors.category_id}
+                    </div>
+                )}
             </div>
 
             {/* Submit and Cancel Buttons */}
@@ -279,5 +339,4 @@ const ProductForm: React.FC<ProductFormProps> = ({
         </form>
     );
 };
-
 export default ProductForm;

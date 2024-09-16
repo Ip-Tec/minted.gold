@@ -7,7 +7,7 @@ import {
     faTrash,
     faTimes,
 } from "@fortawesome/free-solid-svg-icons";
-import { Product } from "@/types/types";
+import { Category, Product } from "@/types/types";
 import ProductForm from "@/Components/Admin/Form/ProductForm";
 import { Link, useForm, usePage } from "@inertiajs/react";
 import Modal from "@/Components/User/Modal";
@@ -19,6 +19,8 @@ interface ProductsProp {
 const ProductComponent: React.FC<ProductsProp> = ({ product }) => {
     const { post, get, put, delete: destory, data, setData } = useForm();
     const [products, setProducts] = useState(product);
+    const { categories } = usePage<{ categories: Category[] }>().props;
+    console.log({ products });
 
     const [searchTerm, setSearchTerm] = useState("");
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -34,7 +36,7 @@ const ProductComponent: React.FC<ProductsProp> = ({ product }) => {
     );
 
     const handleAddProduct = (newProduct: Product) => {
-        setProducts([...products, newProduct]);
+        setProducts([newProduct, ...products]);
         setIsSidebarOpen(false);
     };
 
@@ -98,17 +100,27 @@ const ProductComponent: React.FC<ProductsProp> = ({ product }) => {
                 <thead>
                     <tr>
                         <th className="border-b p-2">Name</th>
+                        <th className="border-b p-2">Image</th>
                         <th className="border-b p-2">Category</th>
                         <th className="border-b p-2">Price</th>
                         <th className="border-b p-2">Actions</th>
                     </tr>
                 </thead>
+
                 <tbody>
                     {filteredProducts.map((product) => (
                         <tr key={product.id}>
                             <td className="border-b p-2">{product.name}</td>
                             <td className="border-b p-2">
-                                {product.category_id}
+                                <img src={`${product.main_image}`} alt={product.name} className="w-16 h-16 object-cover" />
+                            </td>
+                            <td className="border-b p-2">
+                                {
+                                    categories.find(
+                                        (category) =>
+                                            category.id === product.category_id
+                                    )?.name
+                                }
                             </td>
                             <td className="border-b p-2">${product.price}</td>
                             <td className="border-b p-2 flex space-x-2">
@@ -163,14 +175,12 @@ const ProductComponent: React.FC<ProductsProp> = ({ product }) => {
 
             {/* Edit Product Modal */}
             {isEditModalOpen && productToEdit && (
-                <Modal
-                    show={isEditModalOpen}
-                    maxWidth="lg"
-                    closeable={isEditModalOpen}
-                    onClose={closeEditModal}
+                <div
+                    className="fixed inset-0 bg-black bg-opacity-70 z-10 flex justify-end"
+                    onClick={closeEditModal}
                 >
                     <div
-                        className="bg-gray-800 mt-8 my-4 p-6 text-white"
+                        className="bg-gray-800 w-[45%] p-6 text-white"
                         onClick={(e) => e.stopPropagation()}
                     >
                         <h3 className="text-xl font-bold mb-4">Edit Product</h3>
@@ -181,7 +191,7 @@ const ProductComponent: React.FC<ProductsProp> = ({ product }) => {
                             isEditing={true}
                         />
                     </div>
-                </Modal>
+                </div>
             )}
 
             {/* Delete Confirmation Modal */}

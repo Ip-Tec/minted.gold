@@ -57,7 +57,7 @@ class AdminCategoryController extends Controller
     public function show()
     {
         $categories = Category::all();
-        // dd($categories);
+        dd($categories);
         return back()->with(['categories' => $categories]);
     }
 

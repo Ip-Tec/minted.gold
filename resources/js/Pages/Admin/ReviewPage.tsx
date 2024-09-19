@@ -16,7 +16,6 @@ interface ReviewPageProps extends PageProps {
 export default function ReviewPage({ auth, reviews }: ReviewPageProps) {
     const {
         post,
-        put,
         delete: destroy,
         data,
         setData,
@@ -50,7 +49,7 @@ export default function ReviewPage({ auth, reviews }: ReviewPageProps) {
     };
 
     const handleUpdateReview = (updatedReview: Review) => {
-        put(route("admin.reviews.update", updatedReview.id), {
+        post(route("admin.reviews.update", updatedReview.id), {
             data: {
                 name: updatedReview.comment,
                 image: updatedReview.rating,
@@ -82,7 +81,7 @@ export default function ReviewPage({ auth, reviews }: ReviewPageProps) {
             <AdminLayout auth={auth.user}>
                 <Head title="Admin Review Management" />
                 <ReviewManagement
-                    reviews={_reviews}
+                    reviews={reviews}
                     onAddReview={handleAddReview}
                     onUpdateReview={handleUpdateReview}
                     onDeleteReview={handleDeleteReview}

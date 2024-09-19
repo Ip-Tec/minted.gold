@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Review } from "@/types/types";
+import { useForm } from "@inertiajs/react";
 
 interface ReviewFormProps {
     initialValues: Review;
@@ -14,11 +15,53 @@ const ReviewForm: React.FC<ReviewFormProps> = ({
     onClose,
     isEditing,
 }) => {
+    const { data, setData, post, get, put, reset, errors } = useForm({
+        id: initialValues?.id || "",
+        rating: initialValues?.rating || "",
+        user_id: initialValues?.user_id || "",
+        comment: initialValues?.comment || "",
+        product_id: initialValues?.product_id || "",
+    });
     const [rating, setRating] = useState<number>(initialValues.rating);
     const [comment, setComment] = useState<string>(initialValues.comment);
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+
+        if (isEditing) {
+            post(
+                route("admin.products.update", { product: initialValues.id }),
+                {
+                    preserveScroll: true,
+                    preserveState: true,
+                    forceFormData: true,
+                    only: ["product", "success"],
+                    onSuccess: (page: any) => {
+                        console.log({ page });
+                        onSubmit(page.props.review as Review);
+                        onClose();
+                        reset();
+                    },
+                    onError: (errors) => {
+                        console.log({ errors });
+                    },
+                }
+            );
+        } else {
+            // Create product
+            post(route("admin.products.store"), {
+                preserveScroll: true,
+                preserveState: true,
+                forceFormData: true, // Ensure FormData is used
+                only: ["product", "success"],
+                onSuccess: (page) => {
+                    console.log({ page });
+                    onSubmit(page.props.review as Review);
+                    reset();
+                    onClose();
+                },
+            });
+        }
         const review: Review = {
             ...initialValues,
             rating,

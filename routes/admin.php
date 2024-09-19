@@ -51,8 +51,16 @@ Route::middleware([
 
         Route::get('/users', [UserController::class, 'index'])->name('admin.users');
 
-        Route::get('/_reviews', [AdminReviewController::class, "index"]);
-        Route::apiResource('reviews', AdminReviewController::class);
+        // Route::get('/_reviews', [AdminReviewController::class, "index"]);
+        Route::post('/review/{review}', [AdminCategoryController::class, 'update'])->name('admin.review.update');
+        Route::apiResource('_reviews', AdminReviewController::class)->names([
+            'index' => 'admin.review.index',
+            'create' => 'admin.review.create',
+            'store' => 'admin.review.store',
+            'show' => 'admin.review.show',
+            'destroy' => 'admin.review.destroy',
+        ]);
+
 
         //     Route::middleware(['auth', 'admin'])->group(function () {
         //     Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');

@@ -95,18 +95,21 @@ class AdminCategoryController extends Controller
 
     /**
      * Update the specified resource in storage.
+     * @param \Illuminate\Http\Request $request
+     * @param \App\Models\Category $categoryId
+     * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $categoryId)
     {
         // dd($request);
         // dd($categoryId);
-        // dd($request->all());
+        // dd($request->all(), $categoryId);
         // Find the category by ID
         $category = Category::findOrFail($categoryId);
 
         // Validate the request data
         $validatedData = $request->validate([
-            'name' => 'required|string|max:255',
+            'name' => 'string|max:105',
             'description' => 'nullable|string',
             'image' => [
                 'nullable',

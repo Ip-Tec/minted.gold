@@ -16,13 +16,10 @@ const CategoryForm: React.FC<CategoryFormProps> = ({
     isEditing,
 }) => {
     const { data, setData, post, put, reset, errors, processing } = useForm({
+        id: initialValues.id,
         name: initialValues.name || "",
-        image:
-            initialValues.image && typeof initialValues.image === "object"
-                ? initialValues.image
-                : null,
-        image_string: initialValues.image_string || "",
         description: initialValues.description || "",
+        image: null as File | null,
     });
 
     const [previewImage, setPreviewImage] = useState<string>(
@@ -30,52 +27,38 @@ const CategoryForm: React.FC<CategoryFormProps> = ({
     );
     const [isDragOver, setIsDragOver] = useState<boolean>(false);
 
-    /**
-     * Handle image change event
-     * @param e - React change event for input element
-     */
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         console.log("handleImageChange");
         const file = e.target.files?.[0];
         if (file) {
+            setData("image", file);
             const reader = new FileReader();
             reader.onloadend = () => {
                 setPreviewImage(reader.result as string);
-                // Update the image in the form state
-                console.log("setting image");
-                setData("image", file as any);
-                // Clear image_string when a new file is selected
-                setData("image_string", "");
             };
             reader.readAsDataURL(file);
         }
     };
 
     const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
-        console.log("handleDragOver");
         e.preventDefault();
         setIsDragOver(true);
     };
 
     const handleDragLeave = (e: React.DragEvent<HTMLDivElement>) => {
-        console.log("handleDragLeave");
         e.preventDefault();
         setIsDragOver(false);
     };
 
     const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
-        console.log("handleDrop");
         e.preventDefault();
         setIsDragOver(false);
         const file = e.dataTransfer.files[0];
         if (file) {
+            setData("image", file);
             const reader = new FileReader();
             reader.onloadend = () => {
                 setPreviewImage(reader.result as string);
-                // Update the image in the form state
-                setData("image", previewImage as any);
-                // Clear image_string when a new file is selected
-                setData("image_string", "");
             };
             reader.readAsDataURL(file);
         }
@@ -86,53 +69,41 @@ const CategoryForm: React.FC<CategoryFormProps> = ({
         const formData = new FormData();
         formData.append("name", data.name);
         formData.append("description", data.description);
-        if (data.image && typeof data.image === "object") {
+        if (data.image instanceof File) {
             formData.append("image", data.image);
-        } else if (data.image_string) {
-            formData.append("image_string", data.image_string);
         }
 
+        console.log("Form data being sent:", Object.fromEntries(formData));
+
         if (isEditing) {
-            console.log({ data });
-            put(route("admin.categories.update", {
-                    _category: initialValues.id,
-                    data: data,
-                }),
-                {
-                    data: formData,
-                    preserveScroll: true,
-                    preserveState: true,
-                    forceFormData: true,
-                    only: ["category", "success"],
-                    onSuccess: (page: any) => {
-                        console.log({ page });
-                        console.log({ category: page.props.category });
-                        onSubmit(page.props.category as Category);
-                        onClose();
-                        reset();
-                    },
-                    onError: (formErrors) => {
-                        console.log({ formErrors });
-                        Object.assign(errors, formErrors);
-                    },
-                }
-            );
-        } else {
-            post(route("admin.categories.store"), {
-                data: formData,
+            post(route("admin.categories.update", initialValues.id), {
                 preserveScroll: true,
                 preserveState: true,
                 forceFormData: true,
                 only: ["category", "success"],
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                },
                 onSuccess: (page) => {
                     console.log({ page });
                     onSubmit(page.props.category as Category);
                     reset();
                     onClose();
                 },
-                onError: (formErrors) => {
-                    console.log({ formErrors });
-                    Object.assign(errors, formErrors);
+                onError: (error) => {
+                    console.log({ error });
+                },
+            });
+        } else {
+            post(route("admin.categories.store"), {
+                preserveScroll: true,
+                preserveState: true,
+                forceFormData: true,
+                only: ["category", "success"],
+                onSuccess: (page) => {
+                    onSubmit(page.props.category as Category);
+                    reset();
+                    onClose();
                 },
             });
         }

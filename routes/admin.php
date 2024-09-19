@@ -26,25 +26,28 @@ Route::middleware([
         Route::get('/orders', [OrderController::class, 'index'])->name('admin.orders');
 
         Route::get('/product', [ProductController::class, 'index'])->name('admin.products');
+
+        Route::get('/products/{product}', [ProductController::class, 'update'])->name('admin.products.update');
+
+
         Route::resource('products', ProductController::class)->names([
             'index' => 'admin.products.index',
             'create' => 'admin.products.create',
             'store' => 'admin.products.store',
             'show' => 'admin.products.show',
-            // 'edit' => 'admin.products.edit',
-            'update' => 'admin.products.update',
             'destroy' => 'admin.products.destroy',
         ]);
+
+        Route::post('/categories/{category}', [AdminCategoryController::class, 'update'])->name('admin.categories.update');
 
         Route::resource('_categories', AdminCategoryController::class)->names([
             'index' => 'admin.categories.index',
             'create' => 'admin.categories.create',
             'store' => 'admin.categories.store',
             'show' => 'admin.categories.show',
-            // 'edit' => 'admin.products.edit',
-            'update' => 'admin.categories.update',
             'destroy' => 'admin.categories.destroy',
         ]);
+
 
         Route::get('/users', [UserController::class, 'index'])->name('admin.users');
 

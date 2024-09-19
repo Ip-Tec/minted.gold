@@ -80,7 +80,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
         e.preventDefault();
 
         if (isEditing) {
-            put(route("admin.products.update", { product: initialValues.id }), {
+            post(route("admin.products.update", { product: initialValues.id }), {
                 preserveScroll: true,
                 preserveState: true,
                 forceFormData: true,

@@ -3,7 +3,13 @@ import { Category } from "@/types/types";
 import CategoryForm from "@/Components/Admin/Form/CategoryForm";
 import Modal from "@/Components/User/Modal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlus } from "@fortawesome/free-solid-svg-icons";
+import {
+    faPlus,
+    faSearch,
+    faEdit,
+    faTrash,
+    faTimes,
+} from "@fortawesome/free-solid-svg-icons";
 import { useForm } from "@inertiajs/react";
 
 interface AdminCategoryManagementProps {
@@ -19,7 +25,22 @@ const CategoryManagement: React.FC<AdminCategoryManagementProps> = ({
     onUpdateCategory,
     onDeleteCategory,
 }) => {
-    const { post, get, put, delete: destory, data, setData } = useForm();
+    // Initialize form data with default values
+    const {
+        post,
+        get,
+        put,
+        delete: destory,
+        data,
+        setData,
+        errors,
+    } = useForm({
+        id: "",
+        name: "",
+        image: "",
+        description: "",
+    });
+
     const [filteredCategories, setFilteredCategories] =
         useState<Category[]>(categories);
     const [searchQuery, setSearchQuery] = useState<string>("");
@@ -55,11 +76,13 @@ const CategoryManagement: React.FC<AdminCategoryManagementProps> = ({
         );
         if (categoryToDelete) {
             setIsDeleteModalOpen(true);
-            setCategoryToDelete(categoryToDelete); // Corrected to setCategoryToDelete
+            // Corrected to setCategoryToDelete
+            setCategoryToDelete(categoryToDelete);
         }
     };
 
     const confirmDelete = (id: number) => {
+        console.log({ id });
         destory(route("admin.categories.destroy", id), {
             preserveScroll: true,
             preserveState: true,
@@ -109,19 +132,25 @@ const CategoryManagement: React.FC<AdminCategoryManagementProps> = ({
         <div className="admin-category-management p-4">
             <div className="flex justify-between items-center mb-4">
                 <h2 className="text-2xl font-bold">Category Management</h2>
-                <input
-                    type="text"
-                    placeholder="Search categories..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="p-2 border rounded w-1/3 text-black"
-                />
+                <form className="flex items-start ">
+                    <input
+                        type="text"
+                        placeholder="Search categories..."
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        className="p-2 border rounded w-[20rem] text-black"
+                    />
+                    <button className="bg-blue-500 px-4 py-2 rounded text-white hover:bg-blue-600">
+                        <FontAwesomeIcon icon={faSearch} />
+                    </button>
+                </form>
             </div>
             <table className="w-full border-collapse">
                 <thead>
                     <tr>
                         <th className="border p-2">Name</th>
                         <th className="border p-2">Image</th>
+                        <th className="border p-2">Description</th>
                         <th className="border p-2">Actions</th>
                     </tr>
                 </thead>
@@ -130,19 +159,22 @@ const CategoryManagement: React.FC<AdminCategoryManagementProps> = ({
                         filteredCategories.map((category) => (
                             <tr key={category.id}>
                                 <td className="border p-2">{category.name}</td>
-                                <td className="border p-2">
+                                <td className="border p-2 w-[10rem] m-auto">
                                     <img
-                                        src={category.image}
+                                        src={category.image || undefined}
                                         alt={category.name}
-                                        className="w-20 h-20 object-cover rounded"
+                                        className="w-auto h-20 object-cover rounded"
                                     />
                                 </td>
                                 <td className="border p-2">
+                                    {category.description}
+                                </td>
+                                <td className="border p-2 gap-2">
                                     <button
                                         onClick={() => handleEdit(category)}
                                         className="bg-yellow-500 px-4 py-2 rounded mr-2 text-white hover:bg-yellow-600"
                                     >
-                                        Edit
+                                        <FontAwesomeIcon icon={faEdit} />
                                     </button>
                                     <button
                                         onClick={() =>
@@ -150,7 +182,7 @@ const CategoryManagement: React.FC<AdminCategoryManagementProps> = ({
                                         }
                                         className="bg-red-500 px-4 py-2 rounded text-white hover:bg-red-600"
                                     >
-                                        Delete
+                                        <FontAwesomeIcon icon={faTrash} />
                                     </button>
                                 </td>
                             </tr>
@@ -211,7 +243,8 @@ const CategoryManagement: React.FC<AdminCategoryManagementProps> = ({
                             {categoryToDelete.name}?
                         </p>
                         <div className="font-bold text-base bg-red-500 rounded py-1 px-3 m-2">
-                            All product in {categoryToDelete.name} category will be deleted
+                            All product in {categoryToDelete.name} category will
+                            be deleted
                         </div>
                         <div className="flex justify-end space-x-4">
                             <button

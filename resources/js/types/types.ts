@@ -17,11 +17,12 @@ export interface Product {
 export interface Category {
     id: number;
     name: string;
-    image: string;
-    isDeleted?: boolean;
-    createdAt?: boolean;
-    updatedAt?: boolean;
     description?: string;
+    image: string | null;
+    image_string?: string;
+    isDeleted?: boolean;
+    createdAt?: string;
+    updatedAt?: string;
 }
 
 export interface CartItem {

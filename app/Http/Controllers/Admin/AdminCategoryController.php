@@ -5,11 +5,14 @@ namespace App\Http\Controllers\Admin;
 
 use Inertia\Inertia;
 use App\Models\Category;
+use App\Models\Product;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rules\File;
+use App\Http\Controllers\Admin\ProductController;
+use Illuminate\Support\Facades\Storage;
 
 class AdminCategoryController extends Controller
 {
@@ -52,7 +55,7 @@ class AdminCategoryController extends Controller
         // Handle the file upload
         if ($request->hasFile('image')) {
             $mainImageFileName = $slug . '_' . uniqid() . '_main_image.' . $request->file('image')->getClientOriginalExtension();
-            $mainImagePath = $request->file('image')->storeAs('category_images', $mainImageFileName, 'public');
+            $mainImagePath = $request->file('image')->storeAs('category_images', $mainImageFileName, 'category');
         }
 
         // Create the new category
@@ -93,11 +96,13 @@ class AdminCategoryController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Category $category)
+    public function update(Request $request, $categoryId)
     {
-        // Validate the request data
-        // Debug the incoming request and the category
-        dd($request->all(), $category->loadMin); // To check if request fields are coming through
+        // dd($request);
+        // dd($categoryId);
+        // dd($request->all());
+        // Find the category by ID
+        $category = Category::findOrFail($categoryId);
 
         // Validate the request data
         $validatedData = $request->validate([
@@ -107,28 +112,39 @@ class AdminCategoryController extends Controller
                 'nullable',
                 'file',
                 'image',
-                'max:12288', // 12 MB
+                'max:5120', // 5 MB
             ],
         ]);
-
 
         // Update the category
         $category->name = $validatedData['name'];
         $category->description = $validatedData['description'];
 
+        // Handle image upload if a new image is provided
         if ($request->hasFile('image')) {
+            // Delete the old image if it exists
+            if ($category->image) {
+                Storage::disk('public')->delete($category->image);
+            }
+
             // Handle the file upload
             $slug = Str::slug($validatedData['name']);
             $mainImageFileName = $slug . '_' . uniqid() . '_image.' . $request->file('image')->getClientOriginalExtension();
-            $mainImagePath = $request->file('image')->storeAs('category_images', $mainImageFileName, 'public');
+            $mainImagePath = $request->file('image')->storeAs('category_images', $mainImageFileName, 'category');
 
             // Update the image path
             $category->image = $mainImagePath;
         }
 
-        $category->save(); // Save the updated category
+        // Save the updated category
+        $category->save();
 
+        // Fetch all categories (in case you need to update the list on the frontend)
+        $categories = Category::all();
+
+        // Return success response
         return Inertia::render('Admin/CategoriesPage', [
+            'categories' => $categories,
             'category' => $category,
             'success' => 'Category updated successfully.',
         ]);
@@ -137,38 +153,40 @@ class AdminCategoryController extends Controller
 
     /**
      * Remove the specified resource from storage.
+     * @param \App\Models\Category $categoryId 
      */
-    public function destroy(Category $categoryId)
+    public function destroy($categoryId)
     {
         // First check if the authenticated user is an admin
-        if (!Auth::user()->is_admin) {
+        if (Auth::user()->is_admin) {
             return Inertia::render('Auth/Login', [
                 'error' => 'Unauthorized access. Admins only.',
             ]);
         }
 
-        // Delete the category
+        // Find the category by ID
         $category = Category::findOrFail($categoryId);
-        // try catch the delete
-        try {
-            $category->delete();
-        } catch (\Exception $e) {
-            return Inertia::render(
-                'Admin/CategoriesPage',
-                [
-                    'category' => $category,
-                    'error' => 'Category cannot be deleted because it has products.'
-                ]
-            );
+
+        // Check if the category has associated products
+        if ($category->products()->count() > 0) {
+            // Delete associated products
+            $category->products()->delete();
         }
 
-        // return the success message
-        return Inertia::render(
-            'Admin/CategoriesPage',
-            [
-                'category' => $category,
-                'success' => 'Category deleted successfully.'
-            ]
-        );
+        // Try to delete the category
+        try {
+            $category->delete();
+            $message = 'Category deleted successfully.';
+        } catch (\Exception $e) {
+            $message = 'An error occurred while trying to delete the category.';
+        }
+
+        // Fetch updated categories list
+        $categories = Category::all();
+        // Return the response
+        return Inertia::render('Admin/CategoriesPage', [
+            'categories' => $categories,
+            'message' => $message
+        ]);
     }
 }
